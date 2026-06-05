@@ -24,21 +24,21 @@ The plumbing every other track sits on.
 - [x] First REST endpoint (`GET /api/ping`) returning a DTO — proves the request lifecycle
 - [x] Global exception handling (`@RestControllerAdvice`) + consistent error response DTO
 - [x] CORS configuration (so the React dev server on :5173 can call the API on :8080)
-- [~] Centralized config via `application.properties` / profiles (`dev`, `prod`)
-- [ ] Database connectivity — PostgreSQL datasource (or H2 to start, swap later)
-- [ ] Schema management with **Flyway** (versioned migrations instead of `ddl-auto`)
-- [ ] Repository/monorepo layout decision (backend at root vs `backend/` + `frontend/`)
-- [ ] Health/readiness endpoints (Spring Boot Actuator)
+- [x] Centralized config via `application.properties` / profiles (`dev`, `prod`)
+- [x] Database connectivity — PostgreSQL 17 datasource (Hikari pool, `ddl-auto=validate`)
+- [x] Schema management with **Flyway** (needs `spring-boot-flyway` autoconfig module in Boot 4; first `V1__*.sql` arrives with the first entity)
+- [x] Repository/monorepo layout decision — **flat** (backend at repo root); restructure to `backend/` + `frontend/` when React is added
+- [x] Health/readiness endpoints (Spring Boot Actuator — `/actuator/health` reports `db: UP`)
 
 ## 2. Backend Core / Domain Model
 
 The entities and persistence described in the README.
 
-- [ ] `User` entity + repository
-- [ ] `Scrimmage` entity (sport, city, location, start time, drop-in cost, max players, creator FK)
-- [ ] `Attendance` join entity (User ↔ Scrimmage, many-to-many)
-- [ ] `Friendship` self-referencing join (User ↔ User, with status)
-- [ ] `ChatMessage` entity (Scrimmage → messages)
+- [x] `User` entity + repository (+ `user_sports` collection table via `@ElementCollection`, `V1__create_users_table.sql`)
+- [x] `Scrimmage` entity (sport, city, location, start time, drop-in cost, max players, creator FK — first `@ManyToOne`, `V2__create_scrimmages_table.sql`)
+- [x] `Attendance` join entity (User ↔ Scrimmage, two `@ManyToOne` + `UNIQUE(user_id, scrimmage_id)`, `V3__create_attendances_table.sql`)
+- [x] `Friendship` self-referencing join (User ↔ User, `requester`/`addressee` + `@Enumerated(STRING)` status, `V4__create_friendships_table.sql`)
+- [x] `ChatMessage` entity (Scrimmage → messages; `scrimmage`+`sender` FKs, indexed `(scrimmage_id, sent_at)`, `V5__create_chat_messages_table.sql`)
 - [ ] DTOs for every request/response (never serialize entities directly)
 - [ ] Mapping layer (entity ↔ DTO) — manual mappers first, MapStruct only if it earns its keep
 - [ ] Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.) on request DTOs

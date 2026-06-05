@@ -1,0 +1,3 @@
+# Flyway migrations live in this folder, named V1__description.sql, V2__..., etc.
+# They run in version order at startup. The first real migration arrives with your
+# first @Entity (you'll hand-write that one). This placeholder just keeps the folder.
