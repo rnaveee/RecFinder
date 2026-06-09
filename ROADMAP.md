@@ -39,9 +39,9 @@ The entities and persistence described in the README.
 - [x] `Attendance` join entity (User ↔ Scrimmage, two `@ManyToOne` + `UNIQUE(user_id, scrimmage_id)`, `V3__create_attendances_table.sql`)
 - [x] `Friendship` self-referencing join (User ↔ User, `requester`/`addressee` + `@Enumerated(STRING)` status, `V4__create_friendships_table.sql`)
 - [x] `ChatMessage` entity (Scrimmage → messages; `scrimmage`+`sender` FKs, indexed `(scrimmage_id, sent_at)`, `V5__create_chat_messages_table.sql`)
-- [ ] DTOs for every request/response (never serialize entities directly)
-- [ ] Mapping layer (entity ↔ DTO) — manual mappers first, MapStruct only if it earns its keep
-- [ ] Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.) on request DTOs
+- [x] DTOs for every request/response (never serialize entities directly) — `User` slice: `CreateUserRequest` / `UserResponse`
+- [x] Mapping layer (entity ↔ DTO) — manual `UserMapper` (`@Component`); materializes lazy `sports` inside the tx to dodge `LazyInitializationException`
+- [x] Bean Validation (`@Valid`, `@NotNull`, `@Size`, etc.) on request DTOs — `@Valid` wired in `UserController`; validation failures → 400 via `GlobalExceptionHandler`
 
 ## 3. Authentication & Security
 
@@ -76,13 +76,13 @@ React (Vite) + TailwindCSS + React Router. Functional components + hooks.
 
 The heart of the app — the first real end-to-end value.
 
-- [ ] Create scrimmage (auth required, creator = current user)
-- [ ] List scrimmages
-- [ ] Get scrimmage detail (with attendees)
+- [~] Create scrimmage (`POST /api/scrimmages`) — working with hardcoded `createdById` (auth stand-in); creator-from-current-user lands in Phase 3
+- [x] List scrimmages (`GET /api/scrimmages`)
+- [~] Get scrimmage detail (`GET /api/scrimmages/{id}`, 404 if missing) — attendee list still TODO
 - [ ] Edit / cancel scrimmage (creator only)
-- [ ] Join scrimmage (respect `max_players`, prevent double-join)
-- [ ] Leave scrimmage
-- [ ] Attendee list + live count
+- [x] Join scrimmage (`POST /api/scrimmages/{id}/attendees`) — respects `max_players` (409) + prevents double-join (409); userId is auth stand-in
+- [x] Leave scrimmage (`DELETE /api/scrimmages/{id}/attendees/{userId}`, 204; 404 if not joined)
+- [x] Attendee list (`GET /api/scrimmages/{id}/attendees`) — count available; live UI count is Phase 4 frontend
 - [ ] Past vs upcoming filtering
 
 ## 6. Search & Discovery

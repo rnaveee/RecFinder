@@ -71,6 +71,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Bean Validation: powers @Valid + @NotBlank/@Size/@Min on request DTOs,
+             rejecting bad input with a 400 before it reaches the service layer. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- Lombok: generates getters/setters/constructors at compile time from
              annotations (@Getter, @Setter, @NoArgsConstructor). 'optional' = it's a
              build-time tool, not bundled into the runtime jar. -->
@@ -89,6 +96,21 @@
 
     <build>
         <plugins>
+            <!-- JDK 23+ no longer auto-runs annotation processors found on the classpath.
+                 We must name Lombok explicitly here so javac runs its processor and
+                 generates the @Getter/@Setter/constructor code during compilation. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
