@@ -8,6 +8,8 @@ import com.recfinder.recfinder.exception.NotFoundException;
 import com.recfinder.recfinder.mapper.ScrimmageMapper;
 import com.recfinder.recfinder.repository.ScrimmageRepository;
 import com.recfinder.recfinder.repository.UserRepository;
+import com.recfinder.recfinder.security.AppUserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +32,10 @@ public class ScrimmageService {
 
     @Transactional
     public ScrimmageResponse create(CreateScrimmageRequest request) {
-        User creator = userRepository.findById(request.createdById())
-                .orElseThrow(() -> new NotFoundException("User " + request.createdById() + " not found"));
+        AppUserDetails principal = (AppUserDetails) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+        User creator = userRepository.findByEmail(principal.getUsername())
+                .orElseThrow(() -> new NotFoundException("Authenticated user not found"));
 
         Scrimmage scrimmage = scrimmageMapper.toEntity(request, creator);
         Scrimmage saved = scrimmageRepository.save(scrimmage);

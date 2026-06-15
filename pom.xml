@@ -35,6 +35,34 @@
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
 
+        <!-- Spring Security: adds the filter chain that protects every endpoint.
+             The moment this is on the classpath ALL endpoints require auth by default —
+             our SecurityConfig overrides that to define exactly what's public vs. protected. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JJWT: creates and verifies signed JWT tokens.
+             Split into three jars: api (interfaces), impl (the engine), jackson (JSON parsing). -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-api</artifactId>
+            <version>0.12.6</version>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-impl</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt-jackson</artifactId>
+            <version>0.12.6</version>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- JPA / Hibernate: maps Java objects to database tables and gives us repositories. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

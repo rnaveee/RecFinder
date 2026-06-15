@@ -22,8 +22,5 @@ public record CreateScrimmageRequest(
         BigDecimal attendanceCost,
 
         @NotNull @Min(2)
-        Integer maxPlayers,
-
-        @NotNull
-        Long createdById
+        Integer maxPlayers
 ) {}

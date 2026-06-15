@@ -1,10 +1,8 @@
 package com.recfinder.recfinder.controller;
 
 
-import com.recfinder.recfinder.dto.*;
-import com.recfinder.recfinder.service.*;
-import jakarta.validation.Valid;
-import org.springframework.http.*;
+import com.recfinder.recfinder.dto.UserResponse;
+import com.recfinder.recfinder.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,14 +14,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @PostMapping
-    public ResponseEntity<UserResponse> create(
-            @Valid @RequestBody CreateUserRequest request
-    ) {
-        UserResponse created =  userService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @GetMapping
