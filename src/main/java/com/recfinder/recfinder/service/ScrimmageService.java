@@ -43,8 +43,8 @@ public class ScrimmageService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScrimmageResponse> findAll() {
-        return scrimmageRepository.findAll().stream()
+    public List<ScrimmageResponse> search(String sport, String city) {
+        return scrimmageRepository.search(sport, city).stream()
                 .map(scrimmageMapper::toResponse)
                 .toList();
     }

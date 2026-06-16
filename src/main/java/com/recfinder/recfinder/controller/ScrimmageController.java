@@ -28,8 +28,11 @@ public class ScrimmageController {
     }
 
     @GetMapping
-    public List<ScrimmageResponse> findAll(){
-        return scrimmageService.findAll();
+    public List<ScrimmageResponse> findAll(
+            @RequestParam(required = false) String sport,
+            @RequestParam(required = false) String city
+    ){
+        return scrimmageService.search(sport, city);
     }
 
     @GetMapping("/{id}")
