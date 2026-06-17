@@ -1,7 +1,6 @@
 package com.recfinder.recfinder.service;
 
 import com.recfinder.recfinder.dto.AttendanceResponse;
-import com.recfinder.recfinder.dto.JoinScrimmageRequest;
 import com.recfinder.recfinder.entity.Attendance;
 import com.recfinder.recfinder.entity.Scrimmage;
 import com.recfinder.recfinder.entity.User;
@@ -33,12 +32,12 @@ public class AttendanceService {
     }
 
     @Transactional
-    public AttendanceResponse join(Long scrimmageId, JoinScrimmageRequest joinScrimmageRequest) {
+    public AttendanceResponse join(Long scrimmageId, Long userId) {
         Scrimmage scrimmage = scrimmageRepository.findById(scrimmageId)
                 .orElseThrow(() -> new NotFoundException("Scrimmage " + scrimmageId + " not found"));
 
-        User user = userRepository.findById(joinScrimmageRequest.userId())
-                .orElseThrow(() -> new NotFoundException("User " + joinScrimmageRequest.userId() + " not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User " + userId + " not found"));
 
         if(attendanceRepository.existsByScrimmageIdAndUserId(scrimmageId, user.getId())){
             throw new ConflictException("User " + user.getId() + " has already joined scrimmage " + scrimmageId);

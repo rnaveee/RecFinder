@@ -3,17 +3,13 @@ package com.recfinder.recfinder.service;
 import com.recfinder.recfinder.dto.CreateUserRequest;
 import com.recfinder.recfinder.dto.UserResponse;
 import com.recfinder.recfinder.entity.User;
+import com.recfinder.recfinder.exception.NotFoundException;
 import com.recfinder.recfinder.mapper.UserMapper;
 import com.recfinder.recfinder.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-/**
- * Business logic for users. The service speaks DTOs at its edges (so the
- * controller never sees an entity) but works with entities internally.
- */
 @Service
 public class UserService {
 
@@ -39,5 +35,12 @@ public class UserService {
         return userRepository.findAll().stream()
                 .map(userMapper::toResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse findById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User " + id + " not found"));
+        return userMapper.toResponse(user);
     }
 }

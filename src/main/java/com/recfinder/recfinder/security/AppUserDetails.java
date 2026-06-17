@@ -19,6 +19,10 @@ public class AppUserDetails implements UserDetails {
         return user.getEmail();
     }
 
+    public Long getUserId(){
+        return user.getId();
+    }
+
     @Override
     public String getPassword(){
         return user.getPasswordHash();

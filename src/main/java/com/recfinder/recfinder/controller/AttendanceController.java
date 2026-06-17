@@ -1,11 +1,11 @@
 package com.recfinder.recfinder.controller;
 
 import com.recfinder.recfinder.dto.AttendanceResponse;
-import com.recfinder.recfinder.dto.JoinScrimmageRequest;
+import com.recfinder.recfinder.security.AppUserDetails;
 import com.recfinder.recfinder.service.AttendanceService;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +23,9 @@ public class AttendanceController {
     @PostMapping
     public ResponseEntity<AttendanceResponse> join(
             @PathVariable Long scrimmageId,
-            @Valid @RequestBody JoinScrimmageRequest request) {
-        AttendanceResponse created = attendanceService.join(scrimmageId, request);
+            @AuthenticationPrincipal AppUserDetails principal) {
+
+        AttendanceResponse created = attendanceService.join(scrimmageId, principal.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -33,12 +34,12 @@ public class AttendanceController {
         return attendanceService.listAttendees(scrimmageId);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping
     public ResponseEntity<Void> leave (
             @PathVariable Long scrimmageId,
-            @PathVariable Long userId
+            @AuthenticationPrincipal AppUserDetails principal
     ) {
-        attendanceService.leave(scrimmageId, userId);
+        attendanceService.leave(scrimmageId, principal.getUserId());
         return ResponseEntity.noContent().build();
     }
 }

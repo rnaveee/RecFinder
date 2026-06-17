@@ -2,7 +2,9 @@ package com.recfinder.recfinder.controller;
 
 
 import com.recfinder.recfinder.dto.UserResponse;
+import com.recfinder.recfinder.security.AppUserDetails;
 import com.recfinder.recfinder.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +16,14 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/me")
+    public UserResponse getCurrentUser(
+            @AuthenticationPrincipal AppUserDetails principal
+    ) {
+        return userService.findById(principal.getUserId());
+
     }
 
     @GetMapping

@@ -2,10 +2,12 @@ package com.recfinder.recfinder.controller;
 
 import com.recfinder.recfinder.dto.CreateScrimmageRequest;
 import com.recfinder.recfinder.dto.ScrimmageResponse;
+import com.recfinder.recfinder.security.AppUserDetails;
 import com.recfinder.recfinder.service.ScrimmageService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,9 +23,10 @@ public class ScrimmageController {
 
     @PostMapping
     public ResponseEntity<ScrimmageResponse> createScrimmage(
+            @AuthenticationPrincipal AppUserDetails principal,
             @Valid @RequestBody CreateScrimmageRequest createScrimmageRequest
     ) {
-        ScrimmageResponse created = scrimmageService.create(createScrimmageRequest);
+        ScrimmageResponse created = scrimmageService.create(createScrimmageRequest, principal.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

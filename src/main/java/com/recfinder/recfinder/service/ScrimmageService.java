@@ -31,10 +31,8 @@ public class ScrimmageService {
     }
 
     @Transactional
-    public ScrimmageResponse create(CreateScrimmageRequest request) {
-        AppUserDetails principal = (AppUserDetails) SecurityContextHolder
-                .getContext().getAuthentication().getPrincipal();
-        User creator = userRepository.findByEmail(principal.getUsername())
+    public ScrimmageResponse create(CreateScrimmageRequest request, Long userId) {
+        User creator = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Authenticated user not found"));
 
         Scrimmage scrimmage = scrimmageMapper.toEntity(request, creator);
