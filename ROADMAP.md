@@ -45,11 +45,11 @@ The entities and persistence described in the README.
 
 ## 3. Authentication & Security
 
-- [ ] Spring Security baseline (lock down endpoints, permit public ones)
-- [ ] User registration (`POST /api/auth/register`) with password hashing (BCrypt)
-- [ ] Login issuing a **JWT** (`POST /api/auth/login`)
-- [ ] JWT filter + `UserDetailsService` to authenticate requests
-- [ ] "Current user" resolution (`@AuthenticationPrincipal`) so endpoints act as the logged-in user
+- [x] Spring Security baseline (lock down endpoints, permit public ones)
+- [x] User registration (`POST /api/auth/register`) with password hashing (BCrypt)
+- [x] Login issuing a **JWT** (`POST /api/auth/login`)
+- [x] JWT filter + `UserDetailsService` to authenticate requests
+- [x] "Current user" resolution (`@AuthenticationPrincipal`) so endpoints act as the logged-in user — `GET /api/users/me`, scrimmage + attendance endpoints use principal
 - [ ] Authorization rules (e.g. only the creator can edit/cancel a scrimmage)
 - [ ] Refresh-token / token-expiry strategy
 - [ ] Rate limiting on auth endpoints (production hardening)
@@ -76,12 +76,12 @@ React (Vite) + TailwindCSS + React Router. Functional components + hooks.
 
 The heart of the app — the first real end-to-end value.
 
-- [~] Create scrimmage (`POST /api/scrimmages`) — working with hardcoded `createdById` (auth stand-in); creator-from-current-user lands in Phase 3
+- [x] Create scrimmage (`POST /api/scrimmages`) — creator resolved from `@AuthenticationPrincipal`
 - [x] List scrimmages (`GET /api/scrimmages`)
-- [~] Get scrimmage detail (`GET /api/scrimmages/{id}`, 404 if missing) — attendee list still TODO
+- [x] Get scrimmage detail (`GET /api/scrimmages/{id}`, 404 if missing)
 - [ ] Edit / cancel scrimmage (creator only)
-- [x] Join scrimmage (`POST /api/scrimmages/{id}/attendees`) — respects `max_players` (409) + prevents double-join (409); userId is auth stand-in
-- [x] Leave scrimmage (`DELETE /api/scrimmages/{id}/attendees/{userId}`, 204; 404 if not joined)
+- [x] Join scrimmage (`POST /api/scrimmages/{id}/attendees`) — respects `max_players` (409) + prevents double-join (409); user from JWT principal
+- [x] Leave scrimmage (`DELETE /api/scrimmages/{id}/attendees`, 204; 404 if not joined) — user from JWT principal
 - [x] Attendee list (`GET /api/scrimmages/{id}/attendees`) — count available; live UI count is Phase 4 frontend
 - [ ] Past vs upcoming filtering
 
@@ -109,9 +109,10 @@ In-event chat per scrimmage, real-time.
 
 ## 8. Social System (Friends)
 
-- [ ] Send friend request
-- [ ] Accept / decline / cancel request
-- [ ] Friends list
+- [x] Send friend request (`POST /api/friendships/{addresseeId}`) — prevents self-request + duplicate
+- [x] Accept / decline request (`PUT /api/friendships/{id}/accept`, `PUT /api/friendships/{id}/decline`) — only addressee can accept/decline, must be PENDING
+- [x] Friends list (`GET /api/friendships`) — returns all ACCEPTED friendships
+- [ ] Cancel pending request (requester withdraws)
 - [ ] Friendship status checks reused across UI (profile, chat, attendee list)
 - [ ] Block user (stretch, but worth scoping for safety)
 
@@ -177,12 +178,12 @@ What makes it deployable and trustworthy, not just feature-complete.
 
 The tracks above are the *what*; this is the *order*. Each phase ships something usable end-to-end.
 
-- **Phase 0 — Handshake:** `/api/ping` → React app fetches it → DB connected (Foundation §1). *You are here.*
-- **Phase 1 — Domain & migrations:** entities + Flyway schema (§2).
-- **Phase 2 — Scrimmages, no auth:** create + list + detail, hardcoded user, minimal UI (§5, §4).
-- **Phase 3 — Auth:** real users + JWT, lock down endpoints, login/register UI (§3, §4).
-- **Phase 4 — Search & join/leave:** filter by sport+city, attendance with limits (§6, §5, §8).
-- **Phase 5 — Social:** friend requests + friends list + profiles (§8, §4).
+- **Phase 0 — Handshake:** `/api/ping` → React app fetches it → DB connected (Foundation §1). ✅
+- **Phase 1 — Domain & migrations:** entities + Flyway schema (§2). ✅
+- **Phase 2 — Scrimmages, no auth:** create + list + detail, hardcoded user, minimal UI (§5, §4). ✅ (backend; no UI yet)
+- **Phase 3 — Auth:** real users + JWT, lock down endpoints, login/register UI (§3, §4). ✅ (backend; no UI yet — authorization rules remaining)
+- **Phase 4 — Search & join/leave:** filter by sport+city, attendance with limits (§6, §5, §8). [~] (basic sport+city search done; pagination/sorting/open-only TODO)
+- **Phase 5 — Social:** friend requests + friends list + profiles (§8, §4). [~] (backend done; no UI yet — cancel request TODO)
 - **Phase 6 — Messaging:** WebSocket chat per scrimmage + friend-from-chat (§7).
 - **Phase 7 — Map:** geocoding, coordinates, map view, near-me / radius search (§9).
 - **Phase 8 — Notifications:** in-app notifications + unread counts (§10).
