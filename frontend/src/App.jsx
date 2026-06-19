@@ -1,0 +1,36 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ScrimmageListPage from "./pages/ScrimmageListPage";
+import ScrimmageDetailPage from "./pages/ScrimmageDetailPage";
+import CreateScrimmagePage from "./pages/CreateScrimmagePage";
+import ProfilePage from "./pages/ProfilePage";
+import FriendsPage from "./pages/FriendsPage";
+import MessagesPage from "./pages/MessagesPage";
+import { CURRENT_USER } from "./data/placeholder";
+
+export default function App() {
+  // TODO: replace with real auth state
+  const user = CURRENT_USER;
+
+  return (
+    <BrowserRouter>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-16 sm:pb-0">
+        <Navbar user={user} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/scrimmages" element={<ScrimmageListPage />} />
+          <Route path="/scrimmages/new" element={<CreateScrimmagePage />} />
+          <Route path="/scrimmages/:id" element={<ScrimmageDetailPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/messages" element={<MessagesPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+}

@@ -58,16 +58,16 @@ The entities and persistence described in the README.
 
 React (Vite) + TailwindCSS + React Router. Functional components + hooks.
 
-- [ ] Vite + Tailwind project scaffold, talking to the backend (Phase 0 handshake)
+- [x] Vite + Tailwind project scaffold, talking to the backend (Phase 0 handshake)
 - [ ] API client layer (fetch/axios wrapper, base URL, error handling)
 - [ ] Auth UI: register, login, logout; store + attach JWT; protected routes
-- [ ] App shell: nav, layout, responsive baseline
-- [ ] Scrimmage **list/browse** page (filter by sport + city)
-- [ ] Scrimmage **detail** page (location, time, cost, attendees)
-- [ ] **Create scrimmage** form (with validation feedback)
+- [x] App shell: nav, layout, responsive baseline
+- [x] Scrimmage **list/browse** page (filter by sport + city)
+- [x] Scrimmage **detail** page (location, time, cost, attendees)
+- [x] **Create scrimmage** form (with validation feedback)
 - [ ] Join/leave controls with live attendee count
-- [ ] User **profile** pages (view + edit)
-- [ ] Friends UI (requests, accept, list)
+- [x] User **profile** pages (view + edit)
+- [x] Friends UI (requests, accept, list)
 - [ ] Chat UI (see Messaging track)
 - [ ] Loading/empty/error states + basic accessibility pass
 - [ ] Design polish: consistent components, mobile-first
