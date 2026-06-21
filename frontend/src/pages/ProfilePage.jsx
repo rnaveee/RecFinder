@@ -1,7 +1,10 @@
-import { CURRENT_USER } from "../data/placeholder";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext.jsx";
+
 
 export default function ProfilePage() {
-  const user = CURRENT_USER;
+  const { user } = useContext(AuthContext);
+  if (!user) return null;
 
   return (
     <div className="max-w-[600px] mx-auto px-4 py-6">

@@ -1,5 +1,4 @@
 
-
 export async function api(path, options = {}){
     const headers = {
         "Content-Type": "application/json",
@@ -37,3 +36,24 @@ export async function register(name, email, password){
     });
 }
 
+export async function getCurrentUser(){
+    return await api("/users/me", {
+        method: "GET"
+    });
+}
+
+export async function getScrimmages(){
+    return await api("/scrimmages");
+}
+
+export async function getScrimmage(id){
+    return await api(`/scrimmages/${id}`);
+}
+
+export async function getAttendees(scrimmageId){
+    return await api(`/scrimmages/${scrimmageId}/attendees`)
+}
+
+export async function getFriendships(){
+    return await api("/friendships");
+}

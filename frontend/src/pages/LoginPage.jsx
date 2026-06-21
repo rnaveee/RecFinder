@@ -1,20 +1,20 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {Link, useNavigate} from "react-router-dom";
-import { login }from "../api.js";
+import { AuthContext } from "../context/AuthContext.jsx"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const { handleLogin } = useContext(AuthContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      const response = await login(email, password);
-      localStorage.setItem("token", response.token);
-      navigate("/scrimmages");
+      await handleLogin(email, password);
+      navigate("/scrimmages")
     } catch {
       alert("ERROR AT LOGIN PAGE");
     }

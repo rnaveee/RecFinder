@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import {Link, useNavigate} from "react-router-dom";
-import { register } from "../api.js";
+import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -8,13 +8,13 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const { handleRegister } = useContext(AuthContext);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      const response = await register(name, email, password);
-      localStorage.setItem("token", response.token);
+      await handleRegister(name, email, password);
 
       navigate("/scrimmages");
     } catch {
