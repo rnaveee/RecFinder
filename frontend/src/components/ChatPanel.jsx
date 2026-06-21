@@ -31,39 +31,42 @@ export default function ChatPanel({ messages, title }) {
   }
 
   return (
-    <div className="flex flex-col border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="flex flex-col bg-white dark:bg-gray-950 overflow-hidden">
       {title && (
-        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-          <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">{title}</h2>
+        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
+          <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-semibold text-gray-600 dark:text-gray-300">
+            {title.charAt(0)}
+          </div>
+          <span className="text-sm font-semibold text-black dark:text-white">{title}</span>
         </div>
       )}
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 max-h-80 min-h-48">
+      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-80 min-h-48 bg-gray-50/50 dark:bg-gray-950">
         {localMessages.length === 0 ? (
           <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">
-            No messages yet. Start the conversation!
+            No messages yet
           </p>
         ) : (
           localMessages.map((msg) => {
             const isOwn = msg.senderId === CURRENT_USER.id;
             return (
               <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[75%] ${isOwn ? "order-1" : ""}`}>
+                <div className="max-w-[75%]">
                   {!isOwn && (
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5 ml-1">
+                    <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-0.5 ml-3">
                       {msg.senderName}
                     </p>
                   )}
                   <div
-                    className={`px-3 py-2 rounded-lg text-sm ${
+                    className={`px-3 py-2 text-sm ${
                       isOwn
-                        ? "bg-green-600 text-white"
-                        : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                        ? "bg-green-600 text-white rounded-[20px] rounded-br-[4px]"
+                        : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-black dark:text-white rounded-[20px] rounded-bl-[4px]"
                     }`}
                   >
                     {msg.content}
                   </div>
-                  <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${isOwn ? "text-right mr-1" : "ml-1"}`}>
+                  <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${isOwn ? "text-right mr-2" : "ml-3"}`}>
                     {formatTime(msg.sentAt)}
                   </p>
                 </div>
@@ -74,18 +77,18 @@ export default function ChatPanel({ messages, title }) {
         <div ref={bottomRef} />
       </div>
 
-      <form onSubmit={handleSend} className="flex gap-2 p-3 border-t border-gray-100 dark:border-gray-800">
+      <form onSubmit={handleSend} className="flex items-center gap-2 px-4 py-3 border-t border-gray-100 dark:border-gray-800">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Type a message..."
-          className="flex-1 px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          placeholder="Message..."
+          className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500"
         />
         <button
           type="submit"
           disabled={!input.trim()}
-          className="px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          className="text-sm font-semibold text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400 transition-colors disabled:opacity-30 disabled:cursor-default"
         >
           Send
         </button>

@@ -15,43 +15,41 @@ export default function ScrimmageListPage() {
   });
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
-        Browse games
-      </h1>
+    <div className="max-w-[600px] mx-auto">
+      <div className="px-4 py-4 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <select
+            value={sport}
+            onChange={(e) => setSport(e.target.value)}
+            className="flex-1 px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500"
+          >
+            <option value="">All sports</option>
+            {ALL_SPORTS.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
 
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <select
-          value={sport}
-          onChange={(e) => setSport(e.target.value)}
-          className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          <option value="">All sports</option>
-          {ALL_SPORTS.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="Filter by city..."
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+          <input
+            type="text"
+            placeholder="Search city..."
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="flex-1 px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500"
+          />
+        </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400 text-center py-12">
-          No games found. Try adjusting your filters.
-        </p>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((s) => (
+      <div className="px-4">
+        {filtered.length === 0 ? (
+          <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-16">
+            No games found.
+          </p>
+        ) : (
+          filtered.map((s) => (
             <ScrimmageCard key={s.id} scrimmage={s} />
-          ))}
-        </div>
-      )}
+          ))
+        )}
+      </div>
     </div>
   );
 }

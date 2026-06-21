@@ -12,12 +12,11 @@ import MessagesPage from "./pages/MessagesPage";
 import { CURRENT_USER } from "./data/placeholder";
 
 export default function App() {
-  // TODO: replace with real auth state
   const user = CURRENT_USER;
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 pb-16 sm:pb-0">
+      <div className="min-h-screen bg-white dark:bg-gray-950 pb-12 sm:pb-0">
         <Navbar user={user} />
         <Routes>
           <Route path="/" element={<HomePage />} />
