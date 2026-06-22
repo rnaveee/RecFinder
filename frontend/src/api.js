@@ -18,6 +18,7 @@ export async function api(path, options = {}) {
         throw new Error(error.message || "Request failed");
     }
 
+    if (response.status === 204) return null;
     return response.json();
 }
 
@@ -77,5 +78,16 @@ export async function acceptFriendRequest(friendshipId) {
 export async function declineFriendRequest(friendshipId) {
     return await api(`/friendships/${friendshipId}/decline`, {
         method: "PUT"
+    });
+}
+
+export async function joinScrimmage(scrimmageId){
+    return await api(`/scrimmages/${scrimmageId}/attendees`, {
+        method: "POST"
+    });
+}
+export async function leaveScrimmage(scrimmageId){
+    return await api(`/scrimmages/${scrimmageId}/attendees`, {
+        method: "DELETE"
     });
 }

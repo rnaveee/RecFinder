@@ -1,8 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
-import { useState, useEffect } from "react";
-import { getAttendees, getScrimmage } from "../api.js";
+import {useState, useEffect, useContext} from "react";
+import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage} from "../api.js";
 import { SCRIMMAGE_MESSAGES } from "../data/placeholder.js";
+import {AuthContext} from "../context/AuthContext.jsx";
 
 function formatDateTime(iso) {
     return new Date(iso).toLocaleDateString("en-US", {
@@ -20,6 +21,7 @@ export default function ScrimmageDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [attendees, setAttendees] = useState([]);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         Promise.all([getScrimmage(id), getAttendees(id)])
@@ -50,6 +52,18 @@ export default function ScrimmageDetailPage() {
     }
 
     const isFull = scrimmage.attendeeCount >= scrimmage.maxPlayers;
+    const isAttending = attendees.some(a => a.userId === user?.id);
+
+    async function handleJoinLeave() {
+        if (isAttending) {
+            await leaveScrimmage(id);
+        } else {
+            await joinScrimmage(id);
+        }
+        const [scrimmageData, attendeesData] = await Promise.all([getScrimmage(id), getAttendees(id)]);
+        setScrimmage(scrimmageData);
+        setAttendees(attendeesData);
+    }
 
     return (
         <div className="max-w-[600px] mx-auto">
@@ -68,14 +82,15 @@ export default function ScrimmageDetailPage() {
                     </div>
                 </div>
                 <button
-                    disabled={isFull}
+                    onClick={handleJoinLeave}
+                    disabled={isFull && !isAttending}
                     className={`text-sm font-semibold transition-colors ${
-                        isFull
+                        isFull && !isAttending
                             ? "text-gray-300 dark:text-neutral-600 cursor-not-allowed"
                             : "text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400"
                     }`}
                 >
-                    {isFull ? "Full" : "Join"}
+                    {isAttending ? "Leave" : isFull ? "Full" : "Join"}
                 </button>
             </div>
 
