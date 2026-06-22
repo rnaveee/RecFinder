@@ -31,7 +31,7 @@ export default function ScrimmageDetailPage() {
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
-    }, []);
+    }, [id]);
 
     if (loading) {
         return <p>Loading...</p>;
