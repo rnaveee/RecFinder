@@ -14,7 +14,7 @@ function isActive(pathname, to, exact) {
   return pathname.startsWith(to);
 }
 
-export default function Navbar({ user }) {
+export default function Navbar({ user, logout }) {
   const { pathname } = useLocation();
 
   return (
@@ -41,7 +41,7 @@ export default function Navbar({ user }) {
             ))}
 
             {user ? (
-              <button className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+              <button onClick={logout} className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                 Log out
               </button>
             ) : (
@@ -56,7 +56,7 @@ export default function Navbar({ user }) {
 
           <div className="sm:hidden">
             {user ? (
-              <button className="text-sm text-gray-500 dark:text-gray-400">
+              <button onClick={logout} className="text-sm text-gray-500 dark:text-gray-400">
                 Log out
               </button>
             ) : (

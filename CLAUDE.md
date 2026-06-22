@@ -129,29 +129,44 @@ about my code and my gaps. Keep me moving.
 
 RecFinder is a web app for finding/creating local drop-in sports (pickup games, open gyms). It is a **learning-focused portfolio project** built incrementally to learn Spring Boot end-to-end.
 
-**The repo is currently a bare Spring Boot skeleton (Roadmap Phase 0).** The only Java code is `RecFinderApplication` (the `@SpringBootApplication` entrypoint) and a `contextLoads` smoke test. None of the domain (entities, controllers, services, repositories, auth, chat, frontend) described in the README exists yet — that README documents the *intended* design, not current code.
+**Current phase: ~Phase 4/5** — backend core is solid, frontend is mostly static mockups.
+
+### What exists and works (backend — all auth-protected via JWT):
+- **Auth:** register (BCrypt), login (JWT), JWT filter, `@AuthenticationPrincipal` resolution, `GET /api/users/me`
+- **Scrimmages:** create, list (with sport+city search), detail, all via DTOs
+- **Attendance:** join (enforces max_players + double-join), leave, list attendees — user from JWT
+- **Friendships:** send request, accept/decline, list accepted — proper authorization checks
+- **Infrastructure:** Flyway (6 migrations), PostgreSQL, CORS, Actuator, GlobalExceptionHandler, dev/prod profiles, `open-in-view=false`, `ddl-auto=validate`
+
+### What exists but is incomplete:
+- **Frontend:** React/Vite/Tailwind app with pages for every feature, but only login+register are wired to real APIs. All other pages use `placeholder.js` data. `api.js` has backend functions that no page calls yet.
+- **ChatMessage:** entity + migration + repository only — no service, controller, or WebSocket
+- **Search:** backend JPQL query works; no pagination, sorting, or "open only" filter
+
+### What doesn't exist yet:
+- WebSocket/STOMP messaging, map/location, notifications
+- Tests (beyond `contextLoads` smoke test)
+- CI/CD, Docker, deployment, security hardening
 
 ## README vs. actual code — known discrepancies
 
-The README is aspirational and drifts from the real project setup. Trust `pom.xml` / actual files over the README for these:
-
-- **Java version:** `pom.xml` targets Java **26** (`<java.version>26</java.version>`); README says 21.
-- **Spring Boot:** parent is **4.0.6**; README says "3.x".
-- **Dependencies present:** only `spring-boot-starter-webmvc` (+ test). JPA, Spring Security/JWT, WebSocket/STOMP, and the PostgreSQL driver in the README are **not yet added** to `pom.xml`.
 - **Base package:** actual code lives in `com.recfinder.recfinder`; README diagrams show `com.recfinder`.
-- **No frontend** exists yet (no `frontend/` dir), despite README's React/Vite instructions.
-
-When adding any of the above, treat it as a real dependency/structure change and flag it per the conventions below.
+- **WebSocket/STOMP** dependency is **not yet added** to `pom.xml`.
 
 ## Commands
 
-Use the Maven wrapper. On this Windows machine use `mvnw.cmd`:
+Use the Maven wrapper. On Linux use `./mvnw`:
 
-```powershell
-.\mvnw.cmd spring-boot:run        # run the app (port 8080)
-.\mvnw.cmd test                   # run all tests
-.\mvnw.cmd clean package          # build the jar
-.\mvnw.cmd test -Dtest=RecFinderApplicationTests#contextLoads   # run a single test method
+```bash
+./mvnw spring-boot:run        # run the app (port 8080)
+./mvnw test                   # run all tests
+./mvnw clean package          # build the jar
+./mvnw test -Dtest=RecFinderApplicationTests#contextLoads   # run a single test method
 ```
 
-(Use `./mvnw` for the POSIX equivalent via the Bash tool.)
+```
+
+Frontend:
+```bash
+cd frontend && npm install && npm run dev   # dev server on :5173
+```

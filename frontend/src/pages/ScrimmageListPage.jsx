@@ -1,18 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScrimmageCard from "../components/ScrimmageCard";
-import { SCRIMMAGES } from "../data/placeholder";
-
-const ALL_SPORTS = [...new Set(SCRIMMAGES.map((s) => s.sport))].sort();
+import { getScrimmages } from "../api.js";
 
 export default function ScrimmageListPage() {
   const [sport, setSport] = useState("");
   const [city, setCity] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [scrimmages, setScrimmages] = useState([]);
 
-  const filtered = SCRIMMAGES.filter((s) => {
+  useEffect(() => {
+    getScrimmages().then(res => setScrimmages(res))
+        .catch(err => setError(err.message))
+        .finally(() => setLoading(false));
+  }, []);
+
+  const ALL_SPORTS = [...new Set(scrimmages.map(s => s.sport))].sort();
+
+  const filtered = scrimmages.filter(s => {
     if (sport && s.sport !== sport) return false;
-    if (city && !s.city.toLowerCase().includes(city.toLowerCase())) return false;
-    return true;
+    return !(city && !s.city.toLowerCase().includes(city.toLowerCase()));
+
   });
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>{error}</p>;
 
   return (
     <div className="max-w-[600px] mx-auto">
@@ -21,8 +33,7 @@ export default function ScrimmageListPage() {
           <select
             value={sport}
             onChange={(e) => setSport(e.target.value)}
-            className="flex-1 px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500"
-          >
+            className="flex-1 px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500">
             <option value="">All sports</option>
             {ALL_SPORTS.map((s) => (
               <option key={s} value={s}>{s}</option>
