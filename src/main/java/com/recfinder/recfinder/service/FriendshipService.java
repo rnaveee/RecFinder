@@ -86,4 +86,11 @@ public class FriendshipService {
                 .map(friendshipMapper::toResponse)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<FriendshipResponse> getPendingRequests(Long userId){
+        return friendshipRepository.findByAddresseeIdAndStatus(userId, FriendshipStatus.PENDING).stream()
+                .map(friendshipMapper::toResponse)
+                .toList();
+    }
 }

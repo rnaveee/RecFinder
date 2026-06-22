@@ -6,6 +6,7 @@ import com.recfinder.recfinder.entity.Scrimmage;
 import com.recfinder.recfinder.entity.User;
 import com.recfinder.recfinder.exception.NotFoundException;
 import com.recfinder.recfinder.mapper.ScrimmageMapper;
+import com.recfinder.recfinder.repository.AttendanceRepository;
 import com.recfinder.recfinder.repository.ScrimmageRepository;
 import com.recfinder.recfinder.repository.UserRepository;
 import com.recfinder.recfinder.security.AppUserDetails;
@@ -19,12 +20,15 @@ import java.util.List;
 public class ScrimmageService {
 
     private final ScrimmageRepository scrimmageRepository;
+    private final AttendanceRepository attendanceRepository;
     private final UserRepository userRepository;
     private final ScrimmageMapper scrimmageMapper;
 
     public ScrimmageService(ScrimmageRepository scrimmageRepository,
                             UserRepository userRepository,
-                            ScrimmageMapper scrimmageMapper) {
+                            ScrimmageMapper scrimmageMapper,
+                            AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
         this.scrimmageRepository = scrimmageRepository;
         this.userRepository = userRepository;
         this.scrimmageMapper = scrimmageMapper;
@@ -37,13 +41,13 @@ public class ScrimmageService {
 
         Scrimmage scrimmage = scrimmageMapper.toEntity(request, creator);
         Scrimmage saved = scrimmageRepository.save(scrimmage);
-        return scrimmageMapper.toResponse(saved);
+        return scrimmageMapper.toResponse(saved, 0);
     }
 
     @Transactional(readOnly = true)
     public List<ScrimmageResponse> search(String sport, String city) {
         return scrimmageRepository.search(sport, city).stream()
-                .map(scrimmageMapper::toResponse)
+                .map(s -> scrimmageMapper.toResponse(s, attendanceRepository.countByScrimmageId(s.getId())))
                 .toList();
     }
 
@@ -51,6 +55,6 @@ public class ScrimmageService {
     public ScrimmageResponse findById(Long id) {
         Scrimmage scrimmage = scrimmageRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Scrimmage " + id + " not found"));
-        return scrimmageMapper.toResponse(scrimmage);
+        return scrimmageMapper.toResponse(scrimmage, attendanceRepository.countByScrimmageId(id));
     }
 }

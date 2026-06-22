@@ -1,14 +1,14 @@
 import { useState, createContext, useEffect } from "react";
-import {getCurrentUser, login, register} from "../api.js";
+import { getCurrentUser, login, register } from "../api.js";
 
 export const AuthContext = createContext(null);
 
-export function AuthProvider({children}){
+export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if(!localStorage.getItem("token")) {
+        if (!localStorage.getItem("token")) {
             setLoading(false);
             return;
         }
@@ -18,26 +18,28 @@ export function AuthProvider({children}){
             .finally(() => setLoading(false));
     }, []);
 
-    function logout(){
+    function logout() {
         localStorage.removeItem("token");
-        setUser(null)
+        setUser(null);
     }
 
-    async function handleLogin(email, password){
+    async function handleLogin(email, password) {
         const response = await login(email, password);
         localStorage.setItem("token", response.token);
         const user = await getCurrentUser();
-        setUser(user)
+        setUser(user);
     }
 
-    async function handleRegister(name, email, password){
+    async function handleRegister(name, email, password) {
         const response = await register(name, email, password);
         localStorage.setItem("token", response.token);
         const user = await getCurrentUser();
-        setUser(user)
+        setUser(user);
     }
 
     return (
-        <AuthContext.Provider value={ { user, loading, logout, handleLogin, handleRegister } }>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, loading, logout, handleLogin, handleRegister }}>
+            {children}
+        </AuthContext.Provider>
     );
 }

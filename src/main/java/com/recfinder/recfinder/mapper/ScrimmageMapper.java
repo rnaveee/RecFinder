@@ -30,7 +30,7 @@ public class ScrimmageMapper {
     }
 
     /** Flatten the entity (incl. its creator) into the outbound response. */
-    public ScrimmageResponse toResponse(Scrimmage scrimmage) {
+    public ScrimmageResponse toResponse(Scrimmage scrimmage, int attendeeCount) {
         User creator = scrimmage.getCreatedBy();   // accessed inside the service's tx, so the
                                                    // lazy @ManyToOne loads here while the session is open
         return new ScrimmageResponse(
@@ -42,7 +42,8 @@ public class ScrimmageMapper {
                 scrimmage.getAttendanceCost(),
                 scrimmage.getMaxPlayers(),
                 creator.getId(),
-                creator.getName()
+                creator.getName(),
+                attendeeCount
         );
     }
 }

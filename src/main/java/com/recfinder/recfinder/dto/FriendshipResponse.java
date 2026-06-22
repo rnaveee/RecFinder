@@ -9,5 +9,7 @@ public record FriendshipResponse (
         Long requesterId,
         Long addresseeId,
         FriendshipStatus status,
-        Instant createdAt
+        Instant createdAt,
+        String requesterName,
+        String addresseeName
 ){}

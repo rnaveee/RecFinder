@@ -12,5 +12,6 @@ public record ScrimmageResponse(
         BigDecimal attendanceCost,
         Integer maxPlayers,
         Long createdById,
-        String createdByName
+        String createdByName,
+        Integer attendeeCount
 ) {}

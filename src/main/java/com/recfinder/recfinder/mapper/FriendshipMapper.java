@@ -13,7 +13,9 @@ public class FriendshipMapper {
                 friendship.getRequester().getId(),
                 friendship.getAddressee().getId(),
                 friendship.getStatus(),
-                friendship.getCreatedAt()
+                friendship.getCreatedAt(),
+                friendship.getRequester().getName(),
+                friendship.getAddressee().getName()
         );
     }
 }

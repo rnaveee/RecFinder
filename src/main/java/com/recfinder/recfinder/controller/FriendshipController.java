@@ -52,5 +52,10 @@ public class FriendshipController {
         return friendshipService.getFriends(principal.getUserId());
     }
 
+    @GetMapping("/requests")
+    public List<FriendshipResponse> getPendingRequests(@AuthenticationPrincipal AppUserDetails principal){
+        return friendshipService.getPendingRequests(principal.getUserId());
+    }
+
 
 }
