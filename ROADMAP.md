@@ -6,7 +6,7 @@ This roadmap takes RecFinder from its current state to a deployed, production-re
 
 **Legend:** `[ ]` not started · `[~]` in progress · `[x]` done
 
-**Estimated remaining: ~63 hours** (as of 2026-06-21)
+**Estimated remaining: ~43 hours** (as of 2026-06-23)
 
 ---
 
@@ -42,7 +42,7 @@ All done. Entities and persistence.
 - [x] Login issuing a **JWT** (`POST /api/auth/login`)
 - [x] JWT filter + `UserDetailsService` to authenticate requests
 - [x] "Current user" resolution (`@AuthenticationPrincipal`)
-- [ ] Authorization rules (e.g. only the creator can edit/cancel a scrimmage) — **~2h**
+- [x] Authorization rules — `ForbiddenException` + handler, creator-only edit/delete on scrimmages
 - [ ] Refresh-token / token-expiry strategy — **~2h**
 - [ ] Rate limiting on auth endpoints — **~1h**
 
@@ -51,36 +51,36 @@ All done. Entities and persistence.
 React (Vite) + TailwindCSS + React Router. Functional components + hooks.
 
 - [x] Vite + Tailwind project scaffold, talking to the backend
-- [~] API client layer — `api.js` wrapper exists with JWT header injection + helper functions, but **pages don't call them yet** — they use `placeholder.js` instead
-- [~] Auth UI — login + register work end-to-end. **Missing:** logout handler, protected routes, `App.jsx` still passes placeholder user
+- [x] API client layer — `api.js` wrapper with JWT header injection, all core endpoints wired
+- [x] Auth UI — login, register, logout with redirect; `App.jsx` uses AuthContext
 - [x] App shell: nav, layout, responsive baseline
-- [~] Scrimmage **list/browse** page — UI built, reads from `placeholder.js`
-- [~] Scrimmage **detail** page — UI built, reads from `placeholder.js`; join/leave non-functional
-- [~] **Create scrimmage** form — UI built, `handleSubmit` is a TODO stub
-- [ ] Join/leave controls with live attendee count
-- [~] User **profile** page — reads AuthContext, but edit non-functional, friends count hardcoded
-- [~] Friends UI — reads from `placeholder.js`; buttons non-functional
-- [~] Chat UI — ChatPanel exists with local state + placeholder; no backend connection
-- [ ] Loading/empty/error states + basic accessibility pass
-
-**Estimated to wire all pages to real APIs: ~6h**
+- [x] Scrimmage **list/browse** page — fetches from real API with loading/error states, client-side filtering
+- [x] Scrimmage **detail** page — fetches scrimmage + attendees, join/leave wired with live refresh
+- [x] **Create scrimmage** form — posts to real API, navigates on success
+- [x] Join/leave controls with live attendee count
+- [x] User **profile** page — reads from AuthContext (edit button + friends count still TODO)
+- [x] Friends UI — fetches friends + pending requests, accept/decline wired with optimistic removal
+- [~] Chat UI — ChatPanel exists with local state + placeholder; no backend connection (Phase 9)
+- [~] Loading/empty/error states — basic states on all wired pages; accessibility pass TODO
 
 ## 5. Scrimmages (Core Feature)
 
 - [x] Create scrimmage (`POST /api/scrimmages`)
 - [x] List scrimmages (`GET /api/scrimmages`)
 - [x] Get scrimmage detail (`GET /api/scrimmages/{id}`)
-- [ ] Edit / cancel scrimmage (creator only) — **~2h**
+- [x] Edit scrimmage (`PUT /api/scrimmages/{id}`) — creator-only authorization
+- [x] Delete scrimmage (`DELETE /api/scrimmages/{id}`) — creator-only authorization
+- [x] Edit/delete UI on detail page (creator only) + edit form page
 - [x] Join scrimmage (`POST /api/scrimmages/{id}/attendees`) — respects `max_players` + prevents double-join
 - [x] Leave scrimmage (`DELETE /api/scrimmages/{id}/attendees`)
 - [x] Attendee list (`GET /api/scrimmages/{id}/attendees`)
-- [ ] Past vs upcoming filtering — **~1h**
+- [x] Open-only filter — JPQL subquery excludes past + full scrimmages server-side
 
 ## 6. Search & Discovery
 
-- [~] Filter by **sport + city** — backend JPQL works, frontend not wired
-- [ ] "Open only" filter (not full, not in the past) — **~1h**
-- [ ] Sorting (soonest start time, cheapest) — **~1h**
+- [x] Filter by **sport + city** — backend JPQL + frontend wired with client-side filtering
+- [x] "Open only" filter (not full, not in the past) — JPQL subquery, server-side
+- [ ] Sorting (soonest start time, cheapest) — **~1h** *(deferred to post-v1 polish)*
 - [ ] Pagination — **~2h**
 
 ## 7. Messaging System (Chat) — core only
@@ -98,9 +98,11 @@ In-event chat per scrimmage, real-time. Stretch goals (typing indicators, modera
 ## 8. Social System (Friends)
 
 - [x] Send friend request (`POST /api/friendships/{addresseeId}`)
-- [x] Accept / decline request
-- [x] Friends list (`GET /api/friendships`)
-- [ ] Cancel pending request (requester withdraws) — **~1h**
+- [x] Accept / decline request (backend + frontend wired)
+- [x] Friends list (`GET /api/friendships`) — frontend wired with name resolution
+- [x] Pending requests list (`GET /api/friendships/requests`) — new endpoint + frontend wired
+- [x] Cancel pending request (`DELETE /api/friendships/{id}/withdraw`) — backend + frontend wired
+- [x] Sent requests list (`GET /api/friendships/sent`) — shows outgoing pending requests
 - [ ] Friendship status checks reused across UI — **~1h**
 
 ## 9. Production Readiness
@@ -146,14 +148,15 @@ Each phase ships something usable end-to-end.
 | 3 | **Auth** — JWT, lock down endpoints, login/register UI | ✅ | — |
 | 4 | **Search & join/leave** — sport+city filter, attendance | ✅ backend | — |
 | 5 | **Social** — friend requests + friends list | ✅ backend | — |
-| **6** | **Frontend integration** — wire ALL pages to real APIs, protected routes, logout | [~] **← YOU ARE HERE** | **6h** |
-| **7** | **Backend completion** — edit/cancel scrimmage, authorization rules, search improvements, social completion | [ ] | **8h** |
+| 6 | **Frontend integration** — wire ALL pages to real APIs, logout | ✅ | — |
+| **7** | **Backend completion** — edit/cancel scrimmage, authorization rules, search improvements, social completion | [~] **← YOU ARE HERE** | **3h remaining** |
+| **7.5** | **View other profiles** — `GET /api/users/{id}`, public profile page, link from attendees | [ ] | **2h** |
 | **8** | **Auth hardening** — refresh tokens, rate limiting | [ ] | **3h** |
 | **9** | **Messaging** — WebSocket/STOMP chat per scrimmage (core only) | [ ] | **11h** |
 | **10** | **Testing** — service, controller, repository tests | [ ] | **10h** |
 | **11** | **Ship it** — CI, security hardening, Docker, deploy | [ ] | **12h** |
 
-**Buffer for debugging/learning:** ~13h → **Total: ~63h**
+**Buffer for debugging/learning:** ~7h → **Total: ~43h**
 
 ---
 

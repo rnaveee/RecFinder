@@ -80,6 +80,20 @@ public class FriendshipService {
         return friendshipMapper.toResponse(request);
     }
 
+    @Transactional
+    public void withdrawRequest(Long friendshipId, Long requesterId){
+        Friendship request = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new NotFoundException("Friendship " + friendshipId + " not found"));
+
+        if (!request.getRequester().getId().equals(requesterId)){
+            throw new ConflictException("requester is mismatched");
+        } else if (!request.getStatus().equals(FriendshipStatus.PENDING)){
+            throw new ConflictException(request.getId() + " is already accepted or declined");
+        }
+
+        friendshipRepository.delete(request);
+    }
+
     @Transactional(readOnly = true)
     public List<FriendshipResponse> getFriends(Long userId){
         return friendshipRepository.findAcceptedRequests(userId, FriendshipStatus.ACCEPTED).stream()
@@ -90,6 +104,13 @@ public class FriendshipService {
     @Transactional(readOnly = true)
     public List<FriendshipResponse> getPendingRequests(Long userId){
         return friendshipRepository.findByAddresseeIdAndStatus(userId, FriendshipStatus.PENDING).stream()
+                .map(friendshipMapper::toResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<FriendshipResponse> getSentRequests(Long userId){
+        return friendshipRepository.findByRequesterIdAndStatus(userId, FriendshipStatus.PENDING).stream()
                 .map(friendshipMapper::toResponse)
                 .toList();
     }

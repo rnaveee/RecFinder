@@ -1,7 +1,7 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
 import {useState, useEffect, useContext} from "react";
-import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage} from "../api.js";
+import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage} from "../api.js";
 import { SCRIMMAGE_MESSAGES } from "../data/placeholder.js";
 import {AuthContext} from "../context/AuthContext.jsx";
 
@@ -17,6 +17,7 @@ function formatDateTime(iso) {
 
 export default function ScrimmageDetailPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [scrimmage, setScrimmage] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -53,6 +54,13 @@ export default function ScrimmageDetailPage() {
 
     const isFull = scrimmage.attendeeCount >= scrimmage.maxPlayers;
     const isAttending = attendees.some(a => a.userId === user?.id);
+    const isCreator = user?.id === scrimmage.createdById;
+
+    async function handleDelete() {
+        if (!confirm("Delete this scrimmage?")) return;
+        await deleteScrimmage(id);
+        navigate("/scrimmages");
+    }
 
     async function handleJoinLeave() {
         if (isAttending) {
@@ -116,6 +124,22 @@ export default function ScrimmageDetailPage() {
                     <span className="text-sm text-gray-500 dark:text-gray-400">Host</span>
                     <span className="text-sm text-black dark:text-white">{scrimmage.createdByName}</span>
                 </div>
+                {isCreator && (
+                    <div className="flex gap-2 pt-2">
+                        <button
+                            onClick={() => navigate(`/scrimmages/${id}/edit`)}
+                            className="flex-1 py-2 text-sm font-semibold rounded-[3px] border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onClick={handleDelete}
+                            className="flex-1 py-2 text-sm font-semibold rounded-[3px] border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Attendees */}

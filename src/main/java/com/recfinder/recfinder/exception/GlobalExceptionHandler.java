@@ -50,10 +50,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(body);
     }
 
+    // Handler deals with forbidden action from users
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ApiError> handleForbidden(ForbiddenException ex, HttpServletRequest request){
+        ApiError body = new ApiError(403, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
     // Fallback for anything we didn't handle explicitly → 500.
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleAll(Exception ex, HttpServletRequest request) {
         ApiError body = new ApiError(500, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(500).body(body);
     }
+
 }

@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.Instant;
 import java.util.List;
 
 public interface ScrimmageRepository extends JpaRepository<Scrimmage, Long> {
 
-    @Query("SELECT s FROM Scrimmage s WHERE (:sport IS NULL OR s.sport = :sport) AND (:city IS NULL OR s.city = :city)")
-    List<Scrimmage> search(@Param("sport") String sport, @Param("city") String city);
+    @Query("SELECT s FROM Scrimmage s WHERE (:sport IS NULL OR s.sport = :sport) AND (:city IS NULL OR s.city = :city) AND (s.startTime > :now) AND (SELECT COUNT(a) FROM Attendance a WHERE a.scrimmage = s) < s.maxPlayers")
+    List<Scrimmage> search(@Param("sport") String sport, @Param("city") String city, @Param("now") Instant now);
 
 }

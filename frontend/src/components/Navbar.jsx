@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const NAV_LINKS = [
     { to: "/scrimmages", label: "Browse", exact: false },
@@ -16,13 +16,15 @@ function isActive(pathname, to, exact) {
 
 export default function Navbar({ user, logout }) {
     const { pathname } = useLocation();
+    const navigate = useNavigate();
 
     return (
         <>
             <nav className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
                 <div className="max-w-[935px] mx-auto px-4 h-[60px] flex items-center justify-between">
-                    <Link to="/" className="text-xl font-semibold text-black dark:text-white tracking-tight">
-                        RecFinder
+                    <Link to="/" className="flex items-center gap-2">
+                        <img src="/logo.png" alt="RecFinder" className="w-8 h-8" />
+                        <span className="text-xl font-semibold text-black dark:text-white tracking-tight">RecFinder</span>
                     </Link>
 
                     <div className="hidden sm:flex items-center gap-5">
@@ -41,7 +43,7 @@ export default function Navbar({ user, logout }) {
                         ))}
 
                         {user ? (
-                            <button onClick={logout} className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
+                            <button onClick={() => { logout(); navigate("/login"); }} className="text-sm text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                                 Log out
                             </button>
                         ) : (
@@ -56,7 +58,7 @@ export default function Navbar({ user, logout }) {
 
                     <div className="sm:hidden">
                         {user ? (
-                            <button onClick={logout} className="text-sm text-gray-500 dark:text-gray-400">
+                            <button onClick={() => { logout(); navigate("/login"); }} className="text-sm text-gray-500 dark:text-gray-400">
                                 Log out
                             </button>
                         ) : (

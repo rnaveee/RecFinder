@@ -42,4 +42,23 @@ public class ScrimmageController {
     public ScrimmageResponse findById(@PathVariable Long id){
         return scrimmageService.findById(id);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ScrimmageResponse> updateById(
+            @AuthenticationPrincipal AppUserDetails principal,
+            @Valid @RequestBody CreateScrimmageRequest editScrimmageRequest,
+            @PathVariable Long id
+    ){
+        ScrimmageResponse update = scrimmageService.update(editScrimmageRequest, id, principal.getUserId());
+        return ResponseEntity.status(HttpStatus.OK).body(update);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(
+            @AuthenticationPrincipal AppUserDetails principal,
+            @PathVariable Long id
+    ) {
+        scrimmageService.delete(id, principal.getUserId());
+        return ResponseEntity.noContent().build();
+    }
 }

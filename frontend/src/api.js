@@ -65,6 +65,19 @@ export async function createScrimmage(body) {
     });
 }
 
+export async function updateScrimmage(id, body){
+    return await api(`/scrimmages/${id}`, {
+        method: "PUT",
+        body: JSON.stringify(body)
+    });
+}
+
+export async function deleteScrimmage(id){
+    return await api(`/scrimmages/${id}`, {
+        method: "DELETE",
+    });
+}
+
 export async function getPendingRequests() {
     return await api("/friendships/requests");
 }
@@ -78,6 +91,16 @@ export async function acceptFriendRequest(friendshipId) {
 export async function declineFriendRequest(friendshipId) {
     return await api(`/friendships/${friendshipId}/decline`, {
         method: "PUT"
+    });
+}
+
+export async function getSentRequests() {
+    return await api("/friendships/sent");
+}
+
+export async function withdrawFriendRequest(friendshipId) {
+    return await api(`/friendships/${friendshipId}/withdraw`, {
+        method: "DELETE"
     });
 }
 

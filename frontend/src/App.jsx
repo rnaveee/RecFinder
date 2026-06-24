@@ -9,6 +9,7 @@ import CreateScrimmagePage from "./pages/CreateScrimmagePage";
 import ProfilePage from "./pages/ProfilePage";
 import FriendsPage from "./pages/FriendsPage";
 import MessagesPage from "./pages/MessagesPage";
+import EditScrimmagePage from "./pages/EditScrimmagePage";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext.jsx";
 
@@ -26,6 +27,7 @@ export default function App() {
                     <Route path="/scrimmages" element={<ScrimmageListPage />} />
                     <Route path="/scrimmages/new" element={<CreateScrimmagePage />} />
                     <Route path="/scrimmages/:id" element={<ScrimmageDetailPage />} />
+                    <Route path="/scrimmages/:id/edit" element={<EditScrimmagePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
                     <Route path="/messages" element={<MessagesPage />} />

@@ -29,6 +29,15 @@ public class FriendshipController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @DeleteMapping("/{id}/withdraw")
+    public ResponseEntity<Void> withdrawRequest(
+            @AuthenticationPrincipal AppUserDetails principal,
+            @PathVariable Long id
+    ) {
+        friendshipService.withdrawRequest(id, principal.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/{friendshipId}/accept")
     public ResponseEntity<FriendshipResponse> acceptFriendRequest(
             @AuthenticationPrincipal AppUserDetails principal,
@@ -57,5 +66,9 @@ public class FriendshipController {
         return friendshipService.getPendingRequests(principal.getUserId());
     }
 
+    @GetMapping("/sent")
+    public List<FriendshipResponse> getSentRequests(@AuthenticationPrincipal AppUserDetails principal){
+        return friendshipService.getSentRequests(principal.getUserId());
+    }
 
 }

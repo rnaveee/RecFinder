@@ -4,6 +4,7 @@ export default function HomePage() {
     return (
         <div className="flex flex-col items-center justify-center min-h-[calc(100vh-60px)] px-4">
             <div className="max-w-sm text-center">
+                <img src="/logo.png" alt="RecFinder" className="w-20 h-20 mx-auto mb-4" />
                 <h1 className="text-3xl font-semibold text-black dark:text-white mb-2 tracking-tight">
                     RecFinder
                 </h1>

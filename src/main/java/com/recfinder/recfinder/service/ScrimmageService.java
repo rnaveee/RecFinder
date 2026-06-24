@@ -4,6 +4,8 @@ import com.recfinder.recfinder.dto.CreateScrimmageRequest;
 import com.recfinder.recfinder.dto.ScrimmageResponse;
 import com.recfinder.recfinder.entity.Scrimmage;
 import com.recfinder.recfinder.entity.User;
+import com.recfinder.recfinder.exception.ConflictException;
+import com.recfinder.recfinder.exception.ForbiddenException;
 import com.recfinder.recfinder.exception.NotFoundException;
 import com.recfinder.recfinder.mapper.ScrimmageMapper;
 import com.recfinder.recfinder.repository.AttendanceRepository;
@@ -14,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -44,9 +47,40 @@ public class ScrimmageService {
         return scrimmageMapper.toResponse(saved, 0);
     }
 
+    @Transactional
+    public ScrimmageResponse update(CreateScrimmageRequest request, Long scrimmageId, Long userId){
+        Scrimmage scrimmage = scrimmageRepository.findById(scrimmageId)
+                .orElseThrow(() -> new NotFoundException("Scrimmage not found"));
+
+        if(!userId.equals(scrimmage.getCreatedBy().getId())){
+            throw new ForbiddenException("User is not permitted to edit this scrimmage.");
+        }
+
+        scrimmage.setCity(request.city());
+        scrimmage.setLocation(request.location());
+        scrimmage.setSport(request.sport());
+        scrimmage.setStartTime(request.startTime());
+        scrimmage.setAttendanceCost(request.attendanceCost());
+        scrimmage.setMaxPlayers(request.maxPlayers());
+
+        return scrimmageMapper.toResponse(scrimmage, attendanceRepository.countByScrimmageId(scrimmageId));
+    }
+
+    @Transactional
+    public void delete(Long scrimmageId, Long userId){
+        Scrimmage scrimmage = scrimmageRepository.findById(scrimmageId)
+                .orElseThrow(() -> new NotFoundException("Scrimmage not found"));
+
+        if(!userId.equals(scrimmage.getCreatedBy().getId())){
+            throw new ForbiddenException("User is not permitted to delete this scrimmage.");
+        }
+
+        scrimmageRepository.delete(scrimmage);
+    }
+
     @Transactional(readOnly = true)
     public List<ScrimmageResponse> search(String sport, String city) {
-        return scrimmageRepository.search(sport, city).stream()
+        return scrimmageRepository.search(sport, city, Instant.now()).stream()
                 .map(s -> scrimmageMapper.toResponse(s, attendanceRepository.countByScrimmageId(s.getId())))
                 .toList();
     }

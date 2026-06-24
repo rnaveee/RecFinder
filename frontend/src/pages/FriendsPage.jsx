@@ -1,19 +1,21 @@
 import { useEffect, useState, useContext } from "react";
-import { getFriendships, getPendingRequests, acceptFriendRequest, declineFriendRequest } from "../api.js";
+import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function FriendsPage() {
     const { user } = useContext(AuthContext);
     const [friendships, setFriendships] = useState([]);
     const [pending, setPending] = useState([]);
+    const [sent, setSent] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        Promise.all([getFriendships(), getPendingRequests()])
-            .then(([friendshipData, pendingData]) => {
+        Promise.all([getFriendships(), getPendingRequests(), getSentRequests()])
+            .then(([friendshipData, pendingData, sentData]) => {
                 setFriendships(friendshipData);
                 setPending(pendingData);
+                setSent(sentData);
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
@@ -27,6 +29,11 @@ export default function FriendsPage() {
     async function handleDecline(id) {
         await declineFriendRequest(id);
         setPending(pending.filter(r => r.id !== id));
+    }
+
+    async function handleWithdraw(id) {
+        await withdrawFriendRequest(id);
+        setSent(sent.filter(r => r.id !== id));
     }
 
     if (loading) {
@@ -62,6 +69,30 @@ export default function FriendsPage() {
                                     Decline
                                 </button>
                             </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {sent.length > 0 && (
+                <div className="border-b border-gray-100 dark:border-gray-800">
+                    <p className="px-4 pt-4 pb-2 text-sm font-semibold text-black dark:text-white">
+                        Sent
+                    </p>
+                    {sent.map((req) => (
+                        <div key={req.id} className="flex items-center gap-3 px-4 py-3">
+                            <div className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0">
+                                {req.addresseeName.charAt(0)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm text-black dark:text-white">
+                                    <span className="font-semibold">{req.addresseeName}</span>
+                                    <span className="text-gray-500 dark:text-gray-400"> pending</span>
+                                </p>
+                            </div>
+                            <button onClick={() => handleWithdraw(req.id)} className="px-4 py-[5px] rounded-lg bg-gray-100 dark:bg-gray-800 text-black dark:text-white text-xs font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                                Cancel
+                            </button>
                         </div>
                     ))}
                 </div>
