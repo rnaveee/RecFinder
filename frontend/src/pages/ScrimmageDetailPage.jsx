@@ -2,7 +2,6 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
 import {useState, useEffect, useContext} from "react";
 import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage, sendFriendRequest, getSentRequests} from "../api.js";
-import { SCRIMMAGE_MESSAGES } from "../data/placeholder.js";
 import {AuthContext} from "../context/AuthContext.jsx";
 
 
@@ -176,10 +175,7 @@ export default function ScrimmageDetailPage() {
                     </div>
                 </div>
             )}
-            <ChatPanel
-                messages={SCRIMMAGE_MESSAGES.filter((m) => m.scrimmageId === scrimmage.id)}
-                title={`Game chat`}
-            />
+            <ChatPanel scrimmageId={scrimmage.id} />
         </div>
     );
 }

@@ -153,6 +153,10 @@ RecFinder is a web app for finding/creating local drop-in sports (pickup games, 
 - **Base package:** actual code lives in `com.recfinder.recfinder`; README diagrams show `com.recfinder`.
 - **WebSocket/STOMP** dependency is **not yet added** to `pom.xml`.
 
+## Code review convention
+
+When the user says anything like "check my code", "what's wrong", "scan", or "review this" — **always read the relevant file(s) first** rather than asking them to paste the code.
+
 ## Commands
 
 Use the Maven wrapper. On Linux use `./mvnw`:

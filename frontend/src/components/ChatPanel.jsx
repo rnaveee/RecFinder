@@ -1,74 +1,77 @@
-import { useState, useRef, useEffect } from "react";
-import { CURRENT_USER } from "../data/placeholder";
+import { useEffect, useRef, useState, useContext } from "react";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
+import { api } from "../api.js";
+import { AuthContext } from "../context/AuthContext.jsx";
 
-function formatTime(iso) {
-    return new Date(iso).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
-
-export default function ChatPanel({ messages, title }) {
+export default function ChatPanel({ scrimmageId }) {
+    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
-    const [localMessages, setLocalMessages] = useState(messages);
+    const clientRef = useRef(null);
     const bottomRef = useRef(null);
+    const { user } = useContext(AuthContext);
+
+    useEffect(() => {
+        api(`/scrimmages/${scrimmageId}/messages`).then(setMessages).catch(() => {});
+
+        const token = localStorage.getItem("token");
+        const client = new Client({
+            webSocketFactory: () => new SockJS("/ws"),
+            connectHeaders: { Authorization: `Bearer ${token}` },
+            onConnect: () => {
+                client.subscribe(`/topic/scrimmages/${scrimmageId}`, (frame) => {
+                    setMessages(prev => [...prev, JSON.parse(frame.body)]);
+                });
+            },
+        });
+
+        client.activate();
+        clientRef.current = client;
+        return () => { client.deactivate(); };
+    }, [scrimmageId]);
 
     useEffect(() => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [localMessages]);
+    }, [messages]);
 
     function handleSend(e) {
         e.preventDefault();
-        if (!input.trim()) return;
-        setLocalMessages([
-            ...localMessages,
-            {
-                id: Date.now(),
-                senderId: CURRENT_USER.id,
-                senderName: CURRENT_USER.name,
-                content: input.trim(),
-                sentAt: new Date().toISOString(),
-            },
-        ]);
+        if (!input.trim() || !clientRef.current?.connected) return;
+        clientRef.current.publish({
+            destination: `/app/chat/${scrimmageId}`,
+            body: JSON.stringify(input.trim()),
+            headers: { "content-type": "application/json" },
+        });
         setInput("");
     }
 
     return (
         <div className="flex flex-col bg-white dark:bg-gray-950 overflow-hidden">
-            {title && (
-                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center gap-3">
-                    <div className="w-6 h-6 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-[10px] font-semibold text-gray-600 dark:text-gray-300">
-                        {title.charAt(0)}
-                    </div>
-                    <span className="text-sm font-semibold text-black dark:text-white">{title}</span>
-                </div>
-            )}
+            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                <span className="text-sm font-semibold text-black dark:text-white">Game chat</span>
+            </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-80 min-h-48 bg-gray-50/50 dark:bg-gray-950">
-                {localMessages.length === 0 ? (
-                    <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">
-                        No messages yet
-                    </p>
+                {messages.length === 0 ? (
+                    <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">No messages yet</p>
                 ) : (
-                    localMessages.map((msg) => {
-                        const isOwn = msg.senderId === CURRENT_USER.id;
+                    messages.map((m) => {
+                        const isMe = m.userId === user?.id;
                         return (
-                            <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+                            <div key={m.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                                 <div className="max-w-[75%]">
-                                    {!isOwn && (
+                                    {!isMe && (
                                         <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-0.5 ml-3">
-                                            {msg.senderName}
+                                            {m.username}
                                         </p>
                                     )}
-                                    <div
-                                        className={`px-3 py-2 text-sm ${
-                                            isOwn
-                                                ? "bg-green-600 text-white rounded-[20px] rounded-br-[4px]"
-                                                : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-black dark:text-white rounded-[20px] rounded-bl-[4px]"
-                                        }`}
-                                    >
-                                        {msg.content}
+                                    <div className={`px-3 py-2 text-sm ${
+                                        isMe
+                                            ? "bg-green-600 text-white rounded-[20px] rounded-br-[4px]"
+                                            : "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-black dark:text-white rounded-[20px] rounded-bl-[4px]"
+                                    }`}>
+                                        {m.content}
                                     </div>
-                                    <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${isOwn ? "text-right mr-2" : "ml-3"}`}>
-                                        {formatTime(msg.sentAt)}
-                                    </p>
                                 </div>
                             </div>
                         );
