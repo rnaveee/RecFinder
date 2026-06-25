@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
 import {useState, useEffect, useContext} from "react";
-import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage, sendFriendRequest, getSentRequests} from "../api.js";
+import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage, sendFriendRequest, getSentRequests, getFriendships} from "../api.js";
 import {AuthContext} from "../context/AuthContext.jsx";
 
 
@@ -26,11 +26,13 @@ export default function ScrimmageDetailPage() {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        Promise.all([getSentRequests(), getScrimmage(id), getAttendees(id)])
-            .then(([sentData, scrimmageData, attendeesData]) => {
+        Promise.all([getSentRequests(), getFriendships(), getScrimmage(id), getAttendees(id)])
+            .then(([sentData, friendsData, scrimmageData, attendeesData]) => {
                 setScrimmage(scrimmageData);
                 setAttendees(attendeesData);
-                setAddedIds(new Set(sentData.map(r => r.addresseeId)));
+                const sentIds = sentData.map(r => r.addresseeId);
+                const friendIds = friendsData.map(f => f.requesterId === user?.id ? f.addresseeId : f.requesterId);
+                setAddedIds(new Set([...sentIds, ...friendIds]));
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
