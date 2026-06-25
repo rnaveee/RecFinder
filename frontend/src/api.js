@@ -42,6 +42,13 @@ export async function getCurrentUser() {
     });
 }
 
+export async function updateCurrentUser(body){
+    return await api("/users/me", {
+        method: "PUT",
+        body: JSON.stringify(body)
+    });
+}
+
 export async function getScrimmages() {
     return await api("/scrimmages");
 }

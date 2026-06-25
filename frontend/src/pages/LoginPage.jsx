@@ -23,11 +23,11 @@ export default function LoginPage() {
     return (
         <div className="flex min-h-[calc(100vh-60px)]">
             {/* Collage side — hidden on mobile */}
-            <div className="hidden lg:flex flex-1 items-center justify-center bg-gray-950">
+            <div className="hidden lg:flex flex-1 items-center justify-center bg-gray-100 dark:bg-gray-950">
                 <img
                     src="/recfinder-collage-stacked.png"
                     alt="Pickup basketball games"
-                    className="max-h-[calc(100vh-60px)] w-auto object-contain brightness-50"
+                    className="max-h-[calc(100vh-60px)] w-auto object-contain dark:brightness-50"
                 />
             </div>
 

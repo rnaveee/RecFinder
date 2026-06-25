@@ -21,7 +21,7 @@ export default function CreateScrimmagePage() {
     async function handleSubmit(e) {
         e.preventDefault();
         const body = {
-            sport: form.sport,
+            sport: form.sport.charAt(0).toUpperCase() + form.sport.slice(1),
             city: form.city,
             location: form.location,
             startTime: new Date(form.startTime).toISOString(),
