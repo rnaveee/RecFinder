@@ -5,6 +5,7 @@ import com.recfinder.recfinder.entity.Friendship;
 import com.recfinder.recfinder.entity.FriendshipStatus;
 import com.recfinder.recfinder.entity.User;
 import com.recfinder.recfinder.exception.ConflictException;
+import com.recfinder.recfinder.exception.ForbiddenException;
 import com.recfinder.recfinder.exception.NotFoundException;
 import com.recfinder.recfinder.mapper.FriendshipMapper;
 import com.recfinder.recfinder.repository.FriendshipRepository;
@@ -92,6 +93,20 @@ public class FriendshipService {
         }
 
         friendshipRepository.delete(request);
+    }
+
+    @Transactional
+    public void removeFriend(Long friendshipId, Long userId){
+        Friendship friendship = friendshipRepository.findById(friendshipId)
+                .orElseThrow(() -> new NotFoundException("Friendship " + friendshipId + " not found"));
+
+        if(!(friendship.getRequester().getId().equals(userId) ||
+                friendship.getAddressee().getId().equals(userId))
+        ) {
+            throw new ForbiddenException("Cannot access this friendship.");
+        }
+
+        friendshipRepository.delete(friendship);
     }
 
     @Transactional(readOnly = true)

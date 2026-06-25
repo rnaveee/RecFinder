@@ -1,9 +1,10 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ChatPanel from "../components/ChatPanel";
 import {useState, useEffect, useContext} from "react";
-import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage} from "../api.js";
+import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage, sendFriendRequest, getSentRequests} from "../api.js";
 import { SCRIMMAGE_MESSAGES } from "../data/placeholder.js";
 import {AuthContext} from "../context/AuthContext.jsx";
+
 
 function formatDateTime(iso) {
     return new Date(iso).toLocaleDateString("en-US", {
@@ -22,13 +23,15 @@ export default function ScrimmageDetailPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [attendees, setAttendees] = useState([]);
+    const [addedIds, setAddedIds] = useState(new Set());
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        Promise.all([getScrimmage(id), getAttendees(id)])
-            .then(([scrimmageData, attendeesData]) => {
+        Promise.all([getSentRequests(), getScrimmage(id), getAttendees(id)])
+            .then(([sentData, scrimmageData, attendeesData]) => {
                 setScrimmage(scrimmageData);
                 setAttendees(attendeesData);
+                setAddedIds(new Set(sentData.map(r => r.addresseeId)));
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
@@ -157,6 +160,17 @@ export default function ScrimmageDetailPage() {
                                 <span className="text-[11px] text-gray-500 dark:text-gray-400 max-w-[60px] truncate">
                                     {a.userName}
                                 </span>
+                                {a.userId !== user?.id && !addedIds.has(a.userId) && (
+                                    <button
+                                        onClick={async () => {
+                                            try { await sendFriendRequest(a.userId); } catch { /* already friends/pending */ }
+                                            setAddedIds(prev => new Set(prev).add(a.userId));
+                                        }}
+                                        className="text-[10px] text-green-600 dark:text-green-500 font-semibold hover:text-green-700 dark:hover:text-green-400"
+                                    >
+                                        + Add
+                                    </button>
+                                )}
                             </div>
                         ))}
                     </div>

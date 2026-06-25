@@ -105,6 +105,12 @@ export async function getSentRequests() {
     return await api("/friendships/sent");
 }
 
+export async function sendFriendRequest(addresseeId){
+    return await api(`/friendships/${addresseeId}`, {
+        method: "POST"
+    });
+}
+
 export async function withdrawFriendRequest(friendshipId) {
     return await api(`/friendships/${friendshipId}/withdraw`, {
         method: "DELETE"
@@ -118,6 +124,12 @@ export async function joinScrimmage(scrimmageId){
 }
 export async function leaveScrimmage(scrimmageId){
     return await api(`/scrimmages/${scrimmageId}/attendees`, {
+        method: "DELETE"
+    });
+}
+
+export async function removeFriend(friendshipId) {
+    return await api(`/friendships/${friendshipId}/remove`, {
         method: "DELETE"
     });
 }

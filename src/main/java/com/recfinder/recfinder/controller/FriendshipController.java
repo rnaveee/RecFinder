@@ -56,6 +56,15 @@ public class FriendshipController {
         return ResponseEntity.ok(declined);
     }
 
+    @DeleteMapping("/{friendshipId}/remove")
+    public ResponseEntity<Void> removeFriend(
+            @AuthenticationPrincipal AppUserDetails principal,
+            @PathVariable Long friendshipId
+    ) {
+        friendshipService.removeFriend(friendshipId, principal.getUserId());
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public List<FriendshipResponse> getFriends(@AuthenticationPrincipal AppUserDetails principal){
         return friendshipService.getFriends(principal.getUserId());

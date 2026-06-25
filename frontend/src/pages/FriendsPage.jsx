@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from "react";
-import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest } from "../api.js";
+import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest, removeFriend } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 
 export default function FriendsPage() {
@@ -9,6 +9,7 @@ export default function FriendsPage() {
     const [sent, setSent] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [confirmRemove, setConfirmRemove] = useState(null); // { id, name }
 
     useEffect(() => {
         Promise.all([getFriendships(), getPendingRequests(), getSentRequests()])
@@ -22,8 +23,9 @@ export default function FriendsPage() {
     }, []);
 
     async function handleAccept(id) {
-        await acceptFriendRequest(id);
+        const accepted = await acceptFriendRequest(id);
         setPending(pending.filter(r => r.id !== id));
+        setFriendships([...friendships, accepted]);
     }
 
     async function handleDecline(id) {
@@ -36,6 +38,12 @@ export default function FriendsPage() {
         setSent(sent.filter(r => r.id !== id));
     }
 
+    async function handleRemove() {
+        await removeFriend(confirmRemove.id);
+        setFriendships(friendships.filter(f => f.id !== confirmRemove.id));
+        setConfirmRemove(null);
+    }
+
     if (loading) {
         return <p>Loading...</p>;
     }
@@ -45,6 +53,31 @@ export default function FriendsPage() {
 
     return (
         <div className="max-w-[600px] mx-auto">
+            {confirmRemove && (
+                <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50 px-4">
+                    <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl p-6 w-full max-w-sm">
+                        <p className="text-sm font-semibold text-black dark:text-white mb-1">Remove friend?</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
+                            Are you sure you want to remove <span className="font-semibold text-black dark:text-white">{confirmRemove.name}</span>?
+                        </p>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => setConfirmRemove(null)}
+                                className="flex-1 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-semibold text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleRemove}
+                                className="flex-1 py-2 rounded-lg bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-colors"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {pending.length > 0 && (
                 <div className="border-b border-gray-100 dark:border-gray-800">
                     <p className="px-4 pt-4 pb-2 text-sm font-semibold text-black dark:text-white">
@@ -107,16 +140,25 @@ export default function FriendsPage() {
                         No friends yet. Join a game and meet people!
                     </p>
                 ) : (
-                    friendships.map((f) => (
-                        <div key={f.id} className="flex items-center gap-3 px-4 py-3">
-                            <div className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0 ring-2 ring-green-100 dark:ring-green-900/30">
-                                {(f.requesterId === user.id ? f.addresseeName : f.requesterName).charAt(0)}
+                    friendships.map((f) => {
+                        const friendName = f.requesterId === user.id ? f.addresseeName : f.requesterName;
+                        return (
+                            <div key={f.id} className="flex items-center gap-3 px-4 py-3">
+                                <div className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0 ring-2 ring-green-100 dark:ring-green-900/30">
+                                    {friendName.charAt(0)}
+                                </div>
+                                <span className="flex-1 text-sm font-semibold text-black dark:text-white">
+                                    {friendName}
+                                </span>
+                                <button
+                                    onClick={() => setConfirmRemove({ id: f.id, name: friendName })}
+                                    className="px-4 py-[5px] rounded-lg bg-gray-100 dark:bg-gray-800 text-black dark:text-white text-xs font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                                >
+                                    Remove
+                                </button>
                             </div>
-                            <span className="text-sm font-semibold text-black dark:text-white">
-                                {f.requesterId === user.id ? f.addresseeName : f.requesterName}
-                            </span>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
         </div>
