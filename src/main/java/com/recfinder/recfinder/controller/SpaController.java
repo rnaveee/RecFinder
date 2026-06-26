@@ -1,5 +1,6 @@
 package com.recfinder.recfinder.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,11 @@ public class SpaController {
 
     @RequestMapping(value = {"/{path:[^\\.]*}", "/**/{path:[^\\.]*}"})
     @ResponseBody
-    public ResponseEntity<byte[]> forward() throws IOException {
+    public ResponseEntity<byte[]> forward(HttpServletRequest request) throws IOException {
+        String uri = request.getRequestURI();
+        if (uri.startsWith("/ws") || uri.startsWith("/api")) {
+            return ResponseEntity.notFound().build();
+        }
         InputStream stream = getClass().getResourceAsStream("/static/index.html");
         if (stream == null) return ResponseEntity.notFound().build();
         HttpHeaders headers = new HttpHeaders();
