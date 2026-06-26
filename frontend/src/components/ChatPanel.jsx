@@ -18,6 +18,9 @@ export default function ChatPanel({ scrimmageId }) {
         const client = new Client({
             webSocketFactory: () => new SockJS("/ws"),
             connectHeaders: { Authorization: `Bearer ${token}` },
+            heartbeatIncoming: 4000,
+            heartbeatOutgoing: 4000,
+            reconnectDelay: 5000,
             onConnect: () => {
                 client.subscribe(`/topic/scrimmages/${scrimmageId}`, (frame) => {
                     setMessages(prev => [...prev, JSON.parse(frame.body)]);
