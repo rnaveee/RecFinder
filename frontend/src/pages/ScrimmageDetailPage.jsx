@@ -3,6 +3,7 @@ import ChatPanel from "../components/ChatPanel";
 import {useState, useEffect, useContext} from "react";
 import {getAttendees, getScrimmage, joinScrimmage, leaveScrimmage, deleteScrimmage, sendFriendRequest, getSentRequests, getFriendships} from "../api.js";
 import {AuthContext} from "../context/AuthContext.jsx";
+import LoadingScreen from "../components/LoadingScreen.jsx";
 
 
 function formatDateTime(iso) {
@@ -41,7 +42,7 @@ export default function ScrimmageDetailPage() {
     }, [id, authLoading]);
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <LoadingScreen />;
     }
     if (error) {
         return <p>{error}</p>;

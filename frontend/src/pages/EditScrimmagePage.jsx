@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getScrimmage, updateScrimmage } from "../api.js";
 import { useToast } from "../context/ToastContext.jsx";
+import LoadingScreen from "../components/LoadingScreen.jsx";
 
 function toLocalDatetime(iso) {
     const d = new Date(iso);
@@ -30,7 +31,7 @@ export default function EditScrimmagePage() {
             .finally(() => setLoading(false));
     }, [id, navigate]);
 
-    if (loading || !form) return <p className="px-4 py-8 text-sm text-gray-500">Loading...</p>;
+    if (loading || !form) return <LoadingScreen />;
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });

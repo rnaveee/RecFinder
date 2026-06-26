@@ -3,6 +3,7 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import { getFriendships, updateCurrentUser } from "../api.js";
 import { useToast } from "../context/ToastContext.jsx";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/LoadingScreen.jsx";
 
 export default function ProfilePage() {
     const [friendships, setFriendships] = useState([]);
@@ -23,7 +24,7 @@ export default function ProfilePage() {
             .finally(() => setLoading(false));
     }, [authLoading]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingScreen />;
     if (error) return <p>{error}</p>;
     if (!user) return null;
 
@@ -129,7 +130,7 @@ export default function ProfilePage() {
                                                 <button
                                                     type="button"
                                                     onClick={() => setForm({ ...form, sports: form.sports.filter((_, j) => j !== i) })}
-                                                    className="px-2 text-sm text-red-500 hover:text-red-700 transition-colors"
+                                                    className="px-2.5 py-1 text-sm text-red-500 border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 rounded-[3px] hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
                                                 >
                                                     &times;
                                                 </button>

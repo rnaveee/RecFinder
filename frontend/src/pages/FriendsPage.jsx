@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from "react";
 import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest, removeFriend } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "../components/LoadingScreen.jsx";
 
 export default function FriendsPage() {
     const { user, loading: authLoading } = useContext(AuthContext);
@@ -52,7 +53,7 @@ export default function FriendsPage() {
     }
 
     if (loading) {
-        return <p>Loading...</p>;
+        return <LoadingScreen />;
     }
     if (error) {
         return <p>{error}</p>;

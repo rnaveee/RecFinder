@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ScrimmageCard from "../components/ScrimmageCard";
 import { getScrimmages } from "../api.js";
+import LoadingScreen from "../components/LoadingScreen.jsx";
 
 export default function ScrimmageListPage() {
     const [sport, setSport] = useState("");
@@ -23,7 +24,7 @@ export default function ScrimmageListPage() {
         return !(city && !s.city.toLowerCase().includes(city.toLowerCase()));
     });
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <LoadingScreen />;
     if (error) return <p>{error}</p>;
 
     return (
