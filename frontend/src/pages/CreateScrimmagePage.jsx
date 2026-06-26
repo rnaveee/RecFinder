@@ -1,6 +1,8 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createScrimmage } from "../api.js";
+import { useToast } from "../context/ToastContext.jsx";
+import {AuthContext} from "../context/AuthContext.jsx";
 
 export default function CreateScrimmagePage() {
     const [form, setForm] = useState({
@@ -12,7 +14,9 @@ export default function CreateScrimmagePage() {
         maxPlayers: "10",
     });
 
+    const { user } = useContext(AuthContext);
     const navigate = useNavigate();
+    const { addToast } = useToast();
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -20,6 +24,11 @@ export default function CreateScrimmagePage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        if(!user){
+            navigate("/login");
+            return;
+        }
         const body = {
             sport: form.sport.charAt(0).toUpperCase() + form.sport.slice(1),
             city: form.city,
@@ -33,14 +42,14 @@ export default function CreateScrimmagePage() {
             await createScrimmage(body);
             navigate("/scrimmages");
         } catch {
-            alert("ERROR CREATING SCRIMMAGE");
+            addToast("Couldn't create your game. Please try again.", "error");
         }
     }
 
-    const inputClass = "w-full px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500";
+    const inputClass = "w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500";
 
     return (
-        <div className="max-w-[600px] mx-auto">
+        <div className="max-w-[935px] mx-auto">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Link to="/scrimmages" className="text-sm text-black dark:text-white">&larr;</Link>
                 <h1 className="text-sm font-semibold text-black dark:text-white">New game</h1>

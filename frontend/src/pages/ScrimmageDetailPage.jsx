@@ -26,6 +26,7 @@ export default function ScrimmageDetailPage() {
     const { user } = useContext(AuthContext);
 
     useEffect(() => {
+        if (!user) { navigate("/login"); return; }
         Promise.all([getSentRequests(), getFriendships(), getScrimmage(id), getAttendees(id)])
             .then(([sentData, friendsData, scrimmageData, attendeesData]) => {
                 setScrimmage(scrimmageData);
@@ -47,7 +48,7 @@ export default function ScrimmageDetailPage() {
 
     if (!scrimmage) {
         return (
-            <div className="max-w-[600px] mx-auto px-4 py-16 text-center">
+            <div className="max-w-[935px] mx-auto px-4 py-16 text-center">
                 <p className="text-sm text-black dark:text-white font-semibold mb-2">Game not found</p>
                 <Link to="/scrimmages" className="text-sm text-green-600 dark:text-green-500">
                     Back to browse
@@ -67,6 +68,10 @@ export default function ScrimmageDetailPage() {
     }
 
     async function handleJoinLeave() {
+        if(!user){
+            navigate("/login");
+            return;
+        }
         if (isAttending) {
             await leaveScrimmage(id);
         } else {
@@ -75,11 +80,11 @@ export default function ScrimmageDetailPage() {
         const [scrimmageData, attendeesData] = await Promise.all([getScrimmage(id), getAttendees(id)]);
         setScrimmage(scrimmageData);
         setAttendees(attendeesData);
+
     }
 
     return (
-        <div className="max-w-[600px] mx-auto">
-            {/* Header */}
+        <div className="max-w-[935px] mx-auto pb-32 sm:pb-0">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Link to="/scrimmages" className="text-sm text-black dark:text-white">
                     &larr;
@@ -106,39 +111,38 @@ export default function ScrimmageDetailPage() {
                 </button>
             </div>
 
-            {/* Details */}
-            <div className="px-4 py-4 space-y-3 border-b border-gray-100 dark:border-gray-800">
-                <div className="flex justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">When</span>
-                    <span className="text-sm text-black dark:text-white">{formatDateTime(scrimmage.startTime)}</span>
+            <div className="px-4 py-4 space-y-3 border-b border-gray-100 dark:border-gray-800 max-w-lg">
+                <div className="flex gap-6 text-sm">
+                    <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">When</span>
+                    <span className="text-black dark:text-white">{formatDateTime(scrimmage.startTime)}</span>
                 </div>
-                <div className="flex justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Sport</span>
-                    <span className="text-sm text-black dark:text-white">{scrimmage.sport}</span>
+                <div className="flex gap-6 text-sm">
+                    <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Sport</span>
+                    <span className="text-black dark:text-white">{scrimmage.sport}</span>
                 </div>
-                <div className="flex justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Cost</span>
-                    <span className="text-sm text-black dark:text-white">{scrimmage.attendanceCost > 0 ? `$${scrimmage.attendanceCost}` : "Free"}</span>
+                <div className="flex gap-6 text-sm">
+                    <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Cost</span>
+                    <span className="text-black dark:text-white">{scrimmage.attendanceCost > 0 ? `$${scrimmage.attendanceCost}` : "Free"}</span>
                 </div>
-                <div className="flex justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Players</span>
-                    <span className="text-sm text-black dark:text-white">{scrimmage.attendeeCount} / {scrimmage.maxPlayers}</span>
+                <div className="flex gap-6 text-sm">
+                    <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Players</span>
+                    <span className="text-black dark:text-white">{scrimmage.attendeeCount} / {scrimmage.maxPlayers}</span>
                 </div>
-                <div className="flex justify-between">
-                    <span className="text-sm text-gray-500 dark:text-gray-400">Host</span>
-                    <span className="text-sm text-black dark:text-white">{scrimmage.createdByName}</span>
+                <div className="flex gap-6 text-sm">
+                    <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Host</span>
+                    <span className="text-black dark:text-white">{scrimmage.createdByName}</span>
                 </div>
                 {isCreator && (
                     <div className="flex gap-2 pt-2">
                         <button
                             onClick={() => navigate(`/scrimmages/${id}/edit`)}
-                            className="flex-1 py-2 text-sm font-semibold rounded-[3px] border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                            className="px-5 py-2 text-sm font-semibold rounded-[3px] border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
                         >
                             Edit
                         </button>
                         <button
                             onClick={handleDelete}
-                            className="flex-1 py-2 text-sm font-semibold rounded-[3px] border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                            className="px-5 py-2 text-sm font-semibold rounded-[3px] border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                         >
                             Delete
                         </button>
@@ -146,7 +150,6 @@ export default function ScrimmageDetailPage() {
                 )}
             </div>
 
-            {/* Attendees */}
             {attendees.length > 0 && (
                 <div className="px-4 py-4 border-b border-gray-100 dark:border-gray-800">
                     <p className="text-sm font-semibold text-black dark:text-white mb-3">

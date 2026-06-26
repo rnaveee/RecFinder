@@ -14,8 +14,12 @@ export async function api(path, options = {}) {
     });
 
     if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Request failed");
+        let message = "Request failed";
+        try {
+            const error = await response.json();
+            message = error.message || message;
+        } catch {}
+        throw new Error(message);
     }
 
     if (response.status === 204) return null;

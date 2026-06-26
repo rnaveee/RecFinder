@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getScrimmage, updateScrimmage } from "../api.js";
+import { useToast } from "../context/ToastContext.jsx";
 
 function toLocalDatetime(iso) {
     const d = new Date(iso);
@@ -11,6 +12,7 @@ function toLocalDatetime(iso) {
 export default function EditScrimmagePage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addToast } = useToast();
     const [loading, setLoading] = useState(true);
     const [form, setForm] = useState(null);
 
@@ -49,14 +51,14 @@ export default function EditScrimmagePage() {
             await updateScrimmage(id, body);
             navigate(`/scrimmages/${id}`);
         } catch {
-            alert("Error updating scrimmage");
+            addToast("Couldn't save your changes. Please try again.", "error");
         }
     }
 
-    const inputClass = "w-full px-3 py-[9px] rounded-[3px] border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-xs focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500";
+    const inputClass = "w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500";
 
     return (
-        <div className="max-w-150 mx-auto">
+        <div className="max-w-[935px] mx-auto">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Link to={`/scrimmages/${id}`} className="text-sm text-black dark:text-white">&larr;</Link>
                 <h1 className="text-sm font-semibold text-black dark:text-white">Edit game</h1>

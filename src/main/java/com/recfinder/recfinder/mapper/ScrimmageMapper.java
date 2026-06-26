@@ -6,17 +6,9 @@ import com.recfinder.recfinder.entity.Scrimmage;
 import com.recfinder.recfinder.entity.User;
 import org.springframework.stereotype.Component;
 
-/**
- * Converts between the Scrimmage entity and its DTOs. Manual mapping, same as UserMapper.
- */
 @Component
 public class ScrimmageMapper {
 
-    /**
-     * Build a new entity from the create request plus the already-looked-up creator.
-     * The mapper does NOT do the lookup itself (that needs a repository) — the service
-     * resolves the User by id and passes it in, keeping this class pure and stateless.
-     */
     public Scrimmage toEntity(CreateScrimmageRequest request, User creator) {
         Scrimmage scrimmage = new Scrimmage();
         scrimmage.setSport(request.sport());
@@ -29,10 +21,8 @@ public class ScrimmageMapper {
         return scrimmage;
     }
 
-    /** Flatten the entity (incl. its creator) into the outbound response. */
     public ScrimmageResponse toResponse(Scrimmage scrimmage, int attendeeCount) {
-        User creator = scrimmage.getCreatedBy();   // accessed inside the service's tx, so the
-                                                   // lazy @ManyToOne loads here while the session is open
+        User creator = scrimmage.getCreatedBy();
         return new ScrimmageResponse(
                 scrimmage.getId(),
                 scrimmage.getSport(),

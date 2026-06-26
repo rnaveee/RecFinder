@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { useToast } from "../context/ToastContext.jsx";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -8,6 +9,7 @@ export default function LoginPage() {
 
     const navigate = useNavigate();
     const { handleLogin } = useContext(AuthContext);
+    const { addToast } = useToast();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -16,14 +18,13 @@ export default function LoginPage() {
             await handleLogin(email, password);
             navigate("/scrimmages");
         } catch {
-            alert("ERROR AT LOGIN PAGE");
+            addToast("Incorrect email or password. Please try again.", "error");
         }
     }
 
     return (
         <div className="flex min-h-[calc(100vh-60px)]">
-            {/* Collage side — hidden on mobile */}
-            <div className="hidden lg:flex flex-1 items-center justify-center bg-gray-100 dark:bg-gray-950">
+            <div className="hidden lg:flex w-1/2 shrink-0 items-center justify-center bg-gray-100 dark:bg-gray-950">
                 <img
                     src="/recfinder-collage-stacked.png"
                     alt="Pickup basketball games"
@@ -31,7 +32,6 @@ export default function LoginPage() {
                 />
             </div>
 
-            {/* Form side */}
             <div className="flex-1 flex items-center justify-center px-4">
                 <div className="w-full max-w-[350px]">
                     <div className="border border-gray-200 dark:border-gray-800 px-10 py-8">

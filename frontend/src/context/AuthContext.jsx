@@ -11,7 +11,7 @@ export function AuthProvider({ children }) {
         if (!loading) return;
         getCurrentUser()
             .then(user => setUser(user))
-            .catch(error => alert(error.message))
+            .catch(() => localStorage.removeItem("token"))
             .finally(() => setLoading(false));
     }, [loading]);
 

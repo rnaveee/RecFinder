@@ -8,9 +8,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttendanceMapper {
 
-    /** Flatten the join entity (user + scrimmage) into the response. */
     public AttendanceResponse toResponse(Attendance attendance) {
-        User user = attendance.getUser();   // lazy, but read inside the service tx → loads fine
+        User user = attendance.getUser();
         return new AttendanceResponse(
                 attendance.getId(),
                 attendance.getScrimmage().getId(),

@@ -1,15 +1,21 @@
 import { useEffect, useState, useContext } from "react";
 import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest, removeFriend } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function FriendsPage() {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!user) navigate("/login");
+    }, [user]);
     const [friendships, setFriendships] = useState([]);
     const [pending, setPending] = useState([]);
     const [sent, setSent] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [confirmRemove, setConfirmRemove] = useState(null); // { id, name }
+    const [confirmRemove, setConfirmRemove] = useState(null);
 
     useEffect(() => {
         Promise.all([getFriendships(), getPendingRequests(), getSentRequests()])
@@ -52,7 +58,7 @@ export default function FriendsPage() {
     }
 
     return (
-        <div className="max-w-[600px] mx-auto">
+        <div className="max-w-[935px] sm:mx-auto">
             {confirmRemove && (
                 <div className="fixed inset-0 bg-black/40 dark:bg-black/60 flex items-center justify-center z-50 px-4">
                     <div className="bg-white dark:bg-gray-950 rounded-xl shadow-xl p-6 w-full max-w-sm">

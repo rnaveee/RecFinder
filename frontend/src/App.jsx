@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import BetaBanner from "./components/BetaBanner";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -8,8 +9,13 @@ import ScrimmageDetailPage from "./pages/ScrimmageDetailPage";
 import CreateScrimmagePage from "./pages/CreateScrimmagePage";
 import ProfilePage from "./pages/ProfilePage";
 import FriendsPage from "./pages/FriendsPage";
-import MessagesPage from "./pages/MessagesPage";
 import EditScrimmagePage from "./pages/EditScrimmagePage";
+import AboutPage from "./pages/AboutPage";
+import SupportPage from "./pages/SupportPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import ToastContainer from "./components/ToastContainer";
+import Footer from "./components/Footer";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext.jsx";
 
@@ -18,8 +24,10 @@ export default function App() {
 
     return (
         <BrowserRouter>
-            <div className="min-h-screen bg-white dark:bg-gray-950 pb-12 sm:pb-0">
+            <div className="min-h-screen bg-white dark:bg-gray-950 pb-16 sm:pb-0 flex flex-col">
                 <Navbar user={user} logout={logout} />
+                <BetaBanner />
+                <ToastContainer />
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
@@ -30,8 +38,12 @@ export default function App() {
                     <Route path="/scrimmages/:id/edit" element={<EditScrimmagePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
-                    <Route path="/messages" element={<MessagesPage />} />
+                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/support" element={<SupportPage />} />
+                    <Route path="/terms" element={<TermsPage />} />
+                    <Route path="/privacy" element={<PrivacyPage />} />
                 </Routes>
+                <Footer />
             </div>
         </BrowserRouter>
     );

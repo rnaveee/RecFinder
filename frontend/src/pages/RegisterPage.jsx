@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { useToast } from "../context/ToastContext.jsx";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
@@ -9,6 +10,7 @@ export default function RegisterPage() {
 
     const navigate = useNavigate();
     const { handleRegister } = useContext(AuthContext);
+    const { addToast } = useToast();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -17,7 +19,7 @@ export default function RegisterPage() {
             await handleRegister(name, email, password);
             navigate("/scrimmages");
         } catch {
-            alert("ERROR AT REGISTER PAGE");
+            addToast("Couldn't create your account. That email may already be in use.", "error");
         }
     }
 
