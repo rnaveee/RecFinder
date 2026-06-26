@@ -1,24 +1,25 @@
 package com.recfinder.recfinder.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
 @Controller
-public class SpaController implements ErrorController {
+public class SpaController {
 
-    @RequestMapping(value = "/error", produces = MediaType.TEXT_HTML_VALUE)
+    @RequestMapping(value = {"/{path:[^\\.]*}", "/**/{path:[^\\.]*}"})
     @ResponseBody
-    public String handleError(HttpServletRequest request) throws IOException {
+    public ResponseEntity<byte[]> forward() throws IOException {
         InputStream stream = getClass().getResourceAsStream("/static/index.html");
-        if (stream == null) return "Not found";
-        return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+        if (stream == null) return ResponseEntity.notFound().build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.TEXT_HTML);
+        return ResponseEntity.ok().headers(headers).body(stream.readAllBytes());
     }
 }

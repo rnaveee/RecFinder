@@ -72,9 +72,9 @@ export default function CreateScrimmagePage() {
                     </div>
                 </div>
 
-                <div>
+                <div className="w-full overflow-hidden">
                     <label htmlFor="startTime" className="block text-xs font-semibold text-black dark:text-white mb-1">Date & time</label>
-                    <input id="startTime" name="startTime" type="datetime-local" value={form.startTime} onChange={handleChange} required className={inputClass + " min-w-0"} />
+                    <input id="startTime" name="startTime" type="datetime-local" value={form.startTime} onChange={handleChange} required className={inputClass} style={{maxWidth: "100%"}} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
