@@ -49,7 +49,7 @@ export default function CreateScrimmagePage() {
     const inputClass = "w-full px-4 py-3 rounded-md border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500";
 
     return (
-        <div className="max-w-[935px] mx-auto">
+        <div className="max-w-[935px] mx-auto overflow-hidden">
             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Link to="/scrimmages" className="text-sm text-black dark:text-white">&larr;</Link>
                 <h1 className="text-sm font-semibold text-black dark:text-white">New game</h1>
@@ -74,7 +74,7 @@ export default function CreateScrimmagePage() {
 
                 <div>
                     <label htmlFor="startTime" className="block text-xs font-semibold text-black dark:text-white mb-1">Date & time</label>
-                    <input id="startTime" name="startTime" type="datetime-local" value={form.startTime} onChange={handleChange} required className={inputClass} />
+                    <input id="startTime" name="startTime" type="datetime-local" value={form.startTime} onChange={handleChange} required className={inputClass + " min-w-0"} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
