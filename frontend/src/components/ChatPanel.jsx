@@ -51,7 +51,7 @@ export default function ChatPanel({ scrimmageId }) {
                 <span className="text-sm font-semibold text-black dark:text-white">Game chat</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-80 min-h-48 bg-gray-50/50 dark:bg-gray-950">
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 max-h-[600px] min-h-64 bg-gray-50/50 dark:bg-gray-950">
                 {messages.length === 0 ? (
                     <p className="text-sm text-gray-400 dark:text-gray-500 text-center py-8">No messages yet</p>
                 ) : (

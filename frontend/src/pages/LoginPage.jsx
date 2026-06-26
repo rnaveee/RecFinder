@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useToast } from "../context/ToastContext.jsx";
@@ -8,7 +8,11 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
-    const { handleLogin } = useContext(AuthContext);
+    const { handleLogin, user } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (user) navigate("/scrimmages");
+    }, [user]);
     const { addToast } = useToast();
 
     async function handleSubmit(e) {
