@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>4.0.6</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.recfinder</groupId>
     <artifactId>RecFinder</artifactId>
@@ -14,12 +14,8 @@
     <name>RecFinder</name>
     <description>RecFinder</description>
     <url/>
-    <licenses>
-        <license/>
-    </licenses>
-    <developers>
-        <developer/>
-    </developers>
+    <licenses><license/></licenses>
+    <developers><developer/></developers>
     <scm>
         <connection/>
         <developerConnection/>
@@ -38,17 +34,10 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>
-
-        <!-- Spring Security: adds the filter chain that protects every endpoint.
-             The moment this is on the classpath ALL endpoints require auth by default —
-             our SecurityConfig overrides that to define exactly what's public vs. protected. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
-        <!-- JJWT: creates and verifies signed JWT tokens.
-             Split into three jars: api (interfaces), impl (the engine), jackson (JSON parsing). -->
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
@@ -66,23 +55,14 @@
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- JPA / Hibernate: maps Java objects to database tables and gives us repositories. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-
-        <!-- Actuator: built-in /actuator/health and other operational endpoints. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-
-        <!-- Flyway: versioned SQL schema migrations (V1__*.sql, run in order at startup). -->
-        <!-- In Spring Boot 4 auto-configuration is split into per-technology modules;
-             spring-boot-flyway provides FlywayAutoConfiguration, which actually runs the
-             migrations. flyway-core alone is on the classpath but never gets invoked. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-flyway</artifactId>
@@ -95,30 +75,20 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
-
-        <!-- PostgreSQL JDBC driver: the code that actually talks to the database. -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Bean Validation: powers @Valid + @NotBlank/@Size/@Min on request DTOs,
-             rejecting bad input with a 400 before it reaches the service layer. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
-
-        <!-- Lombok: generates getters/setters/constructors at compile time from
-             annotations (@Getter, @Setter, @NoArgsConstructor). 'optional' = it's a
-             build-time tool, not bundled into the runtime jar. -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc-test</artifactId>
@@ -128,9 +98,6 @@
 
     <build>
         <plugins>
-            <!-- JDK 23+ no longer auto-runs annotation processors found on the classpath.
-                 We must name Lombok explicitly here so javac runs its processor and
-                 generates the @Getter/@Setter/constructor code during compilation. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -142,6 +109,50 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.15.1</version>
+                <configuration>
+                    <workingDirectory>frontend</workingDirectory>
+                    <nodeVersion>v22.13.1</nodeVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>install-node-and-npm</id>
+                        <goals><goal>install-node-and-npm</goal></goals>
+                    </execution>
+                    <execution>
+                        <id>npm-install</id>
+                        <goals><goal>npm</goal></goals>
+                        <configuration><arguments>install</arguments></configuration>
+                    </execution>
+                    <execution>
+                        <id>npm-build</id>
+                        <goals><goal>npm</goal></goals>
+                        <configuration><arguments>run build</arguments></configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-frontend</id>
+                        <phase>process-resources</phase>
+                        <goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>frontend/dist</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
