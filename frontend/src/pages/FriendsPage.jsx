@@ -4,12 +4,13 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 export default function FriendsPage() {
-    const { user } = useContext(AuthContext);
+    const { user, loading: authLoading } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (authLoading) return;
         if (!user) navigate("/login");
-    }, [user]);
+    }, [user, authLoading]);
     const [friendships, setFriendships] = useState([]);
     const [pending, setPending] = useState([]);
     const [sent, setSent] = useState([]);

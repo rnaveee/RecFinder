@@ -10,17 +10,18 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const [form, setForm] = useState(null);
-    const { user, setUser } = useContext(AuthContext);
+    const { user, setUser, loading: authLoading } = useContext(AuthContext);
     const { addToast } = useToast();
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (authLoading) return;
         if (!user) { navigate("/login"); return; }
         getFriendships()
             .then(res => setFriendships(res))
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
-    }, []);
+    }, [authLoading]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>{error}</p>;

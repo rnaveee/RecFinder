@@ -23,9 +23,10 @@ export default function ScrimmageDetailPage() {
     const [error, setError] = useState(null);
     const [attendees, setAttendees] = useState([]);
     const [addedIds, setAddedIds] = useState(new Set());
-    const { user } = useContext(AuthContext);
+    const { user, loading: authLoading } = useContext(AuthContext);
 
     useEffect(() => {
+        if (authLoading) return;
         if (!user) { navigate("/login"); return; }
         Promise.all([getSentRequests(), getFriendships(), getScrimmage(id), getAttendees(id)])
             .then(([sentData, friendsData, scrimmageData, attendeesData]) => {
@@ -37,7 +38,7 @@ export default function ScrimmageDetailPage() {
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
-    }, [id]);
+    }, [id, authLoading]);
 
     if (loading) {
         return <p>Loading...</p>;
