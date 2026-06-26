@@ -22,9 +22,19 @@ export default function ChatPanel({ scrimmageId }) {
             heartbeatOutgoing: 4000,
             reconnectDelay: 5000,
             onConnect: () => {
+                console.log("[chat] STOMP connected");
                 client.subscribe(`/topic/scrimmages/${scrimmageId}`, (frame) => {
                     setMessages(prev => [...prev, JSON.parse(frame.body)]);
                 });
+            },
+            onStompError: (frame) => {
+                console.error("[chat] STOMP error", frame.headers?.message, frame.body);
+            },
+            onDisconnect: () => {
+                console.warn("[chat] STOMP disconnected");
+            },
+            onWebSocketError: (e) => {
+                console.warn("[chat] WebSocket error, falling back", e);
             },
         });
 
