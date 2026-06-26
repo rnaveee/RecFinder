@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, useContext } from "react";
 import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
 import { api } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 
@@ -15,8 +14,9 @@ export default function ChatPanel({ scrimmageId }) {
         api(`/scrimmages/${scrimmageId}/messages`).then(setMessages).catch(() => {});
 
         const token = localStorage.getItem("token");
+        const proto = location.protocol === "https:" ? "wss" : "ws";
         const client = new Client({
-            webSocketFactory: () => new SockJS("/ws"),
+            brokerURL: `${proto}://${location.host}/ws`,
             connectHeaders: { Authorization: `Bearer ${token}` },
             heartbeatIncoming: 4000,
             heartbeatOutgoing: 4000,
