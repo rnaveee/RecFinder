@@ -1,5 +1,7 @@
 package com.recfinder.recfinder.controller;
 
+import com.recfinder.recfinder.dto.ScrimmageResponse;
+import com.recfinder.recfinder.service.ScrimmageService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,12 @@ public class SpaController {
 
     private static final String BASE_URL = "https://recfinder.ca";
     private static final String OG_IMAGE = BASE_URL + "/og-image.png";
+
+    private final ScrimmageService scrimmageService;
+
+    public SpaController(ScrimmageService scrimmageService) {
+        this.scrimmageService = scrimmageService;
+    }
 
     @RequestMapping(value = {
         "/",
@@ -50,6 +58,7 @@ public class SpaController {
             headers.setContentType(MediaType.TEXT_HTML);
             return ResponseEntity.ok().headers(headers).body(html.getBytes(StandardCharsets.UTF_8));
         }
+
         return serveIndex();
     }
 
@@ -76,8 +85,18 @@ public class SpaController {
 
     private String buildScrimmageMetaHtml(String id) {
         String pageUrl = BASE_URL + "/scrimmages/" + id;
-        String title = "You're invited to a game — RecFinder";
-        String description = "Someone wants you to join their pickup game! Download RecFinder and play.";
+        String title;
+        String description;
+        try {
+            ScrimmageResponse s = scrimmageService.findById(Long.parseLong(id));
+            title = s.sport() + " at " + s.location() + ", " + s.city() + " — RecFinder";
+            description = s.createdByName() + " is hosting a " + s.sport().toLowerCase()
+                    + " game at " + s.location() + ". "
+                    + s.attendeeCount() + "/" + s.maxPlayers() + " players joined. Come play!";
+        } catch (Exception e) {
+            title = "You're invited to a game — RecFinder";
+            description = "Someone wants you to join their pickup game. Sign up on RecFinder!";
+        }
         return """
                 <!DOCTYPE html>
                 <html lang="en">
