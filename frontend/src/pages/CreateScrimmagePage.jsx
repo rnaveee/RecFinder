@@ -55,7 +55,7 @@ export default function CreateScrimmagePage() {
                 <h1 className="text-sm font-semibold text-black dark:text-white">New game</h1>
             </div>
 
-            <form onSubmit={handleSubmit} className="px-4 py-4 space-y-3">
+            <form onSubmit={handleSubmit} autoComplete="off" className="px-4 py-4 space-y-3">
                 <div>
                     <label htmlFor="sport" className="block text-xs font-semibold text-black dark:text-white mb-1">Sport</label>
                     <input id="sport" name="sport" type="text" value={form.sport} onChange={handleChange} required placeholder="e.g. Basketball" className={inputClass} />

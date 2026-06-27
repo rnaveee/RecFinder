@@ -73,6 +73,7 @@ public class SpaController {
     private boolean isCrawler(String ua) {
         String lower = ua.toLowerCase();
         return lower.contains("facebookexternalhit")
+                || lower.contains("instagram")
                 || lower.contains("twitterbot")
                 || lower.contains("whatsapp")
                 || lower.contains("telegrambot")
@@ -109,6 +110,8 @@ public class SpaController {
                   <meta property="og:title" content="%s" />
                   <meta property="og:description" content="%s" />
                   <meta property="og:image" content="%s" />
+                  <meta property="og:image:secure_url" content="%s" />
+                  <meta property="og:image:type" content="image/png" />
                   <meta property="og:image:width" content="1200" />
                   <meta property="og:image:height" content="630" />
                   <meta property="og:url" content="%s" />
@@ -120,6 +123,6 @@ public class SpaController {
                 </head>
                 <body></body>
                 </html>
-                """.formatted(title, description, title, description, OG_IMAGE, pageUrl, title, description, OG_IMAGE, pageUrl);
+                """.formatted(title, description, title, description, OG_IMAGE, OG_IMAGE, pageUrl, title, description, OG_IMAGE, pageUrl);
     }
 }

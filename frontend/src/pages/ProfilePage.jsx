@@ -82,7 +82,7 @@ export default function ProfilePage() {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} autoComplete="off">
                     <div className="sm:grid sm:grid-cols-2 sm:gap-10">
                         {/* Left column */}
                         <div className="space-y-4">

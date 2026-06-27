@@ -24,6 +24,7 @@ export default function ScrimmageDetailPage() {
     const [error, setError] = useState(null);
     const [attendees, setAttendees] = useState([]);
     const [addedIds, setAddedIds] = useState(new Set());
+    const [copied, setCopied] = useState(false);
     const { user, loading: authLoading } = useContext(AuthContext);
 
     useEffect(() => {
@@ -63,6 +64,15 @@ export default function ScrimmageDetailPage() {
     const isAttending = attendees.some(a => a.userId === user?.id);
     const isCreator = user?.id === scrimmage.createdById;
 
+    const shareText = `Join this scrimmage at ${scrimmage.location}! https://recfinder.ca/scrimmages/${id}`;
+
+    function handleCopy() {
+        navigator.clipboard.writeText(shareText).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        });
+    }
+
     async function handleDelete() {
         if (!confirm("Delete this scrimmage?")) return;
         await deleteScrimmage(id);
@@ -87,6 +97,17 @@ export default function ScrimmageDetailPage() {
 
     return (
         <div className="w-full px-2 sm:px-30 pb-32 sm:pb-0">
+            <div className="flex items-center gap-3 px-4 py-2.5 border-b border-gray-100 dark:border-gray-800 bg-gray-50/60 dark:bg-gray-900/40">
+                <p className="text-xs text-gray-400 dark:text-gray-500 shrink-0">Share with friends:</p>
+                <p className="flex-1 text-xs text-gray-500 dark:text-gray-400 truncate">{shareText}</p>
+                <button
+                    onClick={handleCopy}
+                    className="shrink-0 px-3 py-1 text-xs font-semibold rounded-md border border-green-200 dark:border-green-800 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
+                >
+                    {copied ? "Copied to clipboard!" : "Copy"}
+                </button>
+            </div>
+
             <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                 <Link to="/scrimmages" className="text-sm text-black dark:text-white">
                     &larr;
@@ -103,10 +124,12 @@ export default function ScrimmageDetailPage() {
                 <button
                     onClick={handleJoinLeave}
                     disabled={isFull && !isAttending}
-                    className={`text-sm font-semibold transition-colors ${
+                    className={`px-4 py-1.5 text-sm font-semibold rounded-md border transition-colors ${
                         isFull && !isAttending
-                            ? "text-gray-300 dark:text-neutral-600 cursor-not-allowed"
-                            : "text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400"
+                            ? "border-gray-200 dark:border-gray-700 text-gray-300 dark:text-neutral-600 cursor-not-allowed"
+                            : isAttending
+                                ? "border-red-200 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                : "border-green-200 dark:border-green-800 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20"
                     }`}
                 >
                     {isAttending ? "Leave" : isFull ? "Full" : "Join"}
@@ -174,7 +197,7 @@ export default function ScrimmageDetailPage() {
                                                     try { await sendFriendRequest(a.userId); } catch { /* already friends/pending */ }
                                                     setAddedIds(prev => new Set(prev).add(a.userId));
                                                 }}
-                                                className="text-[10px] text-green-600 dark:text-green-500 font-semibold hover:text-green-700 dark:hover:text-green-400"
+                                                className="px-2 py-0.5 text-[10px] font-semibold rounded border border-green-200 dark:border-green-800 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors"
                                             >
                                                 + Add
                                             </button>

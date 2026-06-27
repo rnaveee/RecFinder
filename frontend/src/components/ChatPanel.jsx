@@ -99,12 +99,13 @@ export default function ChatPanel({ scrimmageId }) {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Message..."
+                    autoComplete="off"
                     className="flex-1 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-black dark:text-white text-sm focus:outline-none focus:border-gray-400 dark:focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-500"
                 />
                 <button
                     type="submit"
                     disabled={!input.trim()}
-                    className="text-sm font-semibold text-green-600 dark:text-green-500 hover:text-green-700 dark:hover:text-green-400 transition-colors disabled:opacity-30 disabled:cursor-default"
+                    className="px-4 py-2 text-sm font-semibold rounded-md border border-green-200 dark:border-green-800 text-green-600 dark:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors disabled:opacity-30 disabled:cursor-default"
                 >
                     Send
                 </button>
