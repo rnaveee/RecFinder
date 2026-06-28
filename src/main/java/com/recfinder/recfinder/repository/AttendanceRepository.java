@@ -14,4 +14,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     List<Attendance> findByScrimmageId(Long scrimmageId);
 
     Optional<Attendance> findByScrimmageIdAndUserId(Long scrimmageId, Long userId);
+
+    List<Attendance> findByUserIdOrderByScrimmageStartTimeDesc(Long userId);
 }

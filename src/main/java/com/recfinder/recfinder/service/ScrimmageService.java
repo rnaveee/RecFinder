@@ -87,6 +87,13 @@ public class ScrimmageService {
     }
 
     @Transactional(readOnly = true)
+    public List<ScrimmageResponse> findJoined(Long userId) {
+        return attendanceRepository.findByUserIdOrderByScrimmageStartTimeDesc(userId).stream()
+                .map(a -> scrimmageMapper.toResponse(a.getScrimmage(), attendanceRepository.countByScrimmageId(a.getScrimmage().getId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ScrimmageResponse> findByCreator(Long userId) {
         return scrimmageRepository.findByCreatedByIdOrderByStartTimeDesc(userId).stream()
                 .map(s -> scrimmageMapper.toResponse(s, attendanceRepository.countByScrimmageId(s.getId())))

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { changePassword, getFriendships, getMyScrimmages, updateCurrentUser } from "../api.js";
+import { changePassword, getFriendships, getJoinedScrimmages, getMyScrimmages, updateCurrentUser } from "../api.js";
 import { useToast } from "../context/ToastContext.jsx";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen.jsx";
@@ -9,6 +9,7 @@ import ScrimmageCard from "../components/ScrimmageCard.jsx";
 export default function ProfilePage() {
     const [friendships, setFriendships] = useState([]);
     const [myScrimmages, setMyScrimmages] = useState([]);
+    const [joinedScrimmages, setJoinedScrimmages] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
@@ -22,10 +23,11 @@ export default function ProfilePage() {
     useEffect(() => {
         if (authLoading) return;
         if (!user) { navigate("/login"); return; }
-        Promise.all([getFriendships(), getMyScrimmages()])
-            .then(([friendsData, scrimmagesData]) => {
+        Promise.all([getFriendships(), getMyScrimmages(), getJoinedScrimmages()])
+            .then(([friendsData, scrimmagesData, joinedData]) => {
                 setFriendships(friendsData);
                 setMyScrimmages(scrimmagesData);
+                setJoinedScrimmages(joinedData);
             })
             .catch(err => setError(err.message))
             .finally(() => setLoading(false));
@@ -293,6 +295,17 @@ export default function ProfilePage() {
                 ) : (
                     <div className="space-y-2">
                         {myScrimmages.map(s => <ScrimmageCard key={s.id} scrimmage={s} />)}
+                    </div>
+                )}
+            </div>
+
+            <div className="mt-10 border-t border-gray-100 dark:border-gray-800 pt-6">
+                <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Joined scrimmages</p>
+                {joinedScrimmages.length === 0 ? (
+                    <p className="text-sm text-gray-400 dark:text-gray-500">You haven't joined any games yet.</p>
+                ) : (
+                    <div className="space-y-2">
+                        {joinedScrimmages.map(s => <ScrimmageCard key={s.id} scrimmage={s} />)}
                     </div>
                 )}
             </div>

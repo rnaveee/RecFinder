@@ -35,6 +35,11 @@ public class ScrimmageController {
         return scrimmageService.findByCreator(principal.getUserId());
     }
 
+    @GetMapping("/joined")
+    public List<ScrimmageResponse> findJoined(@AuthenticationPrincipal AppUserDetails principal) {
+        return scrimmageService.findJoined(principal.getUserId());
+    }
+
     @GetMapping
     public List<ScrimmageResponse> findAll(
             @RequestParam(required = false) String sport,
