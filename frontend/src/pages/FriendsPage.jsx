@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { getFriendships, getPendingRequests, getSentRequests, acceptFriendRequest, declineFriendRequest, withdrawFriendRequest, removeFriend } from "../api.js";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen.jsx";
 
 export default function FriendsPage() {
@@ -150,14 +150,15 @@ export default function FriendsPage() {
                 ) : (
                     friendships.map((f) => {
                         const friendName = f.requesterId === user.id ? f.addresseeName : f.requesterName;
+                        const friendId = f.requesterId === user.id ? f.addresseeId : f.requesterId;
                         return (
                             <div key={f.id} className="flex items-center gap-3 px-4 py-3">
-                                <div className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0 ring-2 ring-green-100 dark:ring-green-900/30">
+                                <Link to={`/users/${friendId}`} className="w-11 h-11 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-500 dark:text-gray-400 shrink-0 ring-2 ring-green-100 dark:ring-green-900/30 hover:ring-green-300 dark:hover:ring-green-700 transition-all">
                                     {friendName.charAt(0)}
-                                </div>
-                                <span className="flex-1 text-sm font-semibold text-black dark:text-white">
+                                </Link>
+                                <Link to={`/users/${friendId}`} className="flex-1 text-sm font-semibold text-black dark:text-white hover:text-green-600 dark:hover:text-green-400 transition-colors">
                                     {friendName}
-                                </span>
+                                </Link>
                                 <button
                                     onClick={() => setConfirmRemove({ id: f.id, name: friendName })}
                                     className="px-4 py-[5px] rounded-lg bg-gray-100 dark:bg-gray-800 text-black dark:text-white text-xs font-semibold hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 transition-colors"

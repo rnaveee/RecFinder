@@ -14,6 +14,7 @@ import AboutPage from "./pages/AboutPage";
 import SupportPage from "./pages/SupportPage";
 import TermsPage from "./pages/TermsPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import UserProfilePage from "./pages/UserProfilePage.jsx";
 import ToastContainer from "./components/ToastContainer";
 import Footer from "./components/Footer";
 import { useContext } from "react";
@@ -38,6 +39,7 @@ export default function App() {
                     <Route path="/scrimmages/:id/edit" element={<EditScrimmagePage />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
+                    <Route path="/users/:id" element={<UserProfilePage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/support" element={<SupportPage />} />
                     <Route path="/terms" element={<TermsPage />} />

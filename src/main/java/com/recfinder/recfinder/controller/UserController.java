@@ -3,6 +3,7 @@ package com.recfinder.recfinder.controller;
 
 import com.recfinder.recfinder.dto.ChangePasswordRequest;
 import com.recfinder.recfinder.dto.UpdateUserRequest;
+import com.recfinder.recfinder.dto.UserPublicResponse;
 import com.recfinder.recfinder.dto.UserResponse;
 import com.recfinder.recfinder.security.AppUserDetails;
 import com.recfinder.recfinder.service.UserService;
@@ -44,6 +45,11 @@ public class UserController {
     ) {
         userService.changePassword(principal.getUserId(), request);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{id}")
+    public UserPublicResponse getPublicProfile(@PathVariable Long id) {
+        return userService.findPublicById(id);
     }
 
     @GetMapping

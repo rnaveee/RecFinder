@@ -33,23 +33,25 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new ConflictException("Email already in use: " + request.email());
+        String email = request.email().toLowerCase();
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new ConflictException("Email already in use: " + email);
         }
 
         User user = new User();
         user.setName(request.name());
-        user.setEmail(request.email());
+        user.setEmail(email);
         user.setPasswordHash(passwordEncoder.encode(request.password()));
         userRepository.save(user);
 
-        return new AuthResponse(jwtUtil.generateToken(request.email()));
+        return new AuthResponse(jwtUtil.generateToken(email));
     }
 
     public AuthResponse login(LoginRequest request) {
+        String email = request.email().toLowerCase();
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.email(), request.password())
+                new UsernamePasswordAuthenticationToken(email, request.password())
         );
-        return new AuthResponse(jwtUtil.generateToken(request.email()));
+        return new AuthResponse(jwtUtil.generateToken(email));
     }
 }

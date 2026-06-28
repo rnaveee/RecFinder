@@ -3,6 +3,7 @@ package com.recfinder.recfinder.service;
 import com.recfinder.recfinder.dto.ChangePasswordRequest;
 import com.recfinder.recfinder.dto.CreateUserRequest;
 import com.recfinder.recfinder.dto.UpdateUserRequest;
+import com.recfinder.recfinder.dto.UserPublicResponse;
 import com.recfinder.recfinder.dto.UserResponse;
 import com.recfinder.recfinder.entity.User;
 import com.recfinder.recfinder.exception.BadRequestException;
@@ -73,5 +74,12 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User " + id + " not found."));
         return userMapper.toResponse(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserPublicResponse findPublicById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User " + id + " not found."));
+        return userMapper.toPublicResponse(user);
     }
 }

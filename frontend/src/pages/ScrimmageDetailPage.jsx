@@ -190,9 +190,11 @@ export default function ScrimmageDetailPage() {
                             <div className="flex gap-4 flex-wrap">
                                 {attendees.map((a) => (
                                     <div key={a.id} className="flex flex-col items-center gap-1">
-                                        <div className="w-[56px] h-[56px] rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300 ring-2 ring-gray-200 dark:ring-gray-700">
-                                            {a.userName.charAt(0)}
-                                        </div>
+                                        <Link to={a.userId === user?.id ? "/profile" : `/users/${a.userId}`}>
+                                            <div className="w-[56px] h-[56px] rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300 ring-2 ring-gray-200 dark:ring-gray-700 hover:ring-green-300 dark:hover:ring-green-700 transition-all">
+                                                {a.userName.charAt(0)}
+                                            </div>
+                                        </Link>
                                         <span className="text-[11px] text-gray-500 dark:text-gray-400 max-w-[60px] truncate">
                                             {a.userName}
                                         </span>

@@ -22,8 +22,11 @@ export default function RegisterPage() {
         try {
             await handleRegister(name, email, password);
             navigate("/scrimmages");
-        } catch {
-            addToast("Couldn't create your account. That email may already be in use.", "error");
+        } catch (err) {
+            const message = err.message?.toLowerCase().includes("already in use")
+                ? "That email is already in use."
+                : "Couldn't create your account. Please try again.";
+            addToast(message, "error");
         }
     }
 

@@ -1,6 +1,7 @@
 package com.recfinder.recfinder.mapper;
 
 import com.recfinder.recfinder.dto.CreateUserRequest;
+import com.recfinder.recfinder.dto.UserPublicResponse;
 import com.recfinder.recfinder.dto.UserResponse;
 import com.recfinder.recfinder.entity.User;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,18 @@ public class UserMapper {
 
     public UserResponse toResponse(User user) {
         return new UserResponse(
+                user.getId(),
+                user.getName(),
+                user.getAge(),
+                user.getBio(),
+                user.getSocials(),
+                user.getLocation(),
+                new HashSet<>(user.getSports())
+        );
+    }
+
+    public UserPublicResponse toPublicResponse(User user) {
+        return new UserPublicResponse(
                 user.getId(),
                 user.getName(),
                 user.getAge(),
