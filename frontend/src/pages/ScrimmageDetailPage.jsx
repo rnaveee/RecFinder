@@ -139,6 +139,11 @@ export default function ScrimmageDetailPage() {
             <div className="sm:flex sm:divide-x sm:divide-gray-100 dark:sm:divide-gray-800">
                 <div className="sm:w-52 shrink-0">
                     <div className="px-4 py-4 space-y-3 border-b border-gray-100 dark:border-gray-800">
+                        {scrimmage.isPrivate && (
+                            <span className="block w-fit mx-auto px-3 py-2 text-xs font-semibold rounded-[3px] border border-yellow-300 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400">
+                                🔒 Private game
+                            </span>
+                        )}
                         <div className="flex gap-6 text-sm">
                             <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">When</span>
                             <span className="text-black dark:text-white">{formatDateTime(scrimmage.startTime)}</span>
@@ -155,12 +160,12 @@ export default function ScrimmageDetailPage() {
                             <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Players</span>
                             <span className="text-black dark:text-white">{scrimmage.attendeeCount} / {scrimmage.maxPlayers}</span>
                         </div>
-                        <div className="flex gap-6 text-sm">
+                        <div className="flex mb-3 gap-6 text-sm">
                             <span className="text-gray-500 dark:text-gray-400 w-16 shrink-0">Host</span>
                             <span className="text-black dark:text-white">{scrimmage.createdByName}</span>
                         </div>
                         {isCreator && (
-                            <div className="flex gap-2 pt-2">
+                            <div className="flex gap-2 mt-1.5 pt-2">
                                 <button
                                     onClick={() => navigate(`/scrimmages/${id}/edit`)}
                                     className="px-5 py-2 text-sm font-semibold rounded-[3px] border border-gray-200 dark:border-gray-700 text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"

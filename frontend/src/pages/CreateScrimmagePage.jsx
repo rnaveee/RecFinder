@@ -12,6 +12,7 @@ export default function CreateScrimmagePage() {
         startTime: "",
         attendanceCost: "0",
         maxPlayers: "10",
+        isPrivate: false,
     });
 
     const { user } = useContext(AuthContext);
@@ -19,7 +20,8 @@ export default function CreateScrimmagePage() {
     const { addToast } = useToast();
 
     function handleChange(e) {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+        setForm({ ...form, [e.target.name]: value });
     }
 
     async function handleSubmit(e) {
@@ -36,6 +38,7 @@ export default function CreateScrimmagePage() {
             startTime: new Date(form.startTime).toISOString(),
             attendanceCost: parseFloat(form.attendanceCost),
             maxPlayers: parseInt(form.maxPlayers),
+            isPrivate: form.isPrivate,
         };
 
         try {
@@ -87,6 +90,17 @@ export default function CreateScrimmagePage() {
                         <input id="maxPlayers" name="maxPlayers" type="number" min="2" value={form.maxPlayers} onChange={handleChange} required className={inputClass} />
                     </div>
                 </div>
+
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        name="isPrivate"
+                        checked={form.isPrivate}
+                        onChange={handleChange}
+                        className="w-4 h-4 accent-green-600"
+                    />
+                    <span className="text-sm text-black dark:text-white">Private game (won't appear in public list)</span>
+                </label>
 
                 <button type="submit" className="w-full py-[7px] rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors mt-1">
                     Share

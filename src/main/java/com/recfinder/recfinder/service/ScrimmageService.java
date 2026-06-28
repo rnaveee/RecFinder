@@ -62,6 +62,7 @@ public class ScrimmageService {
         scrimmage.setStartTime(request.startTime());
         scrimmage.setAttendanceCost(request.attendanceCost());
         scrimmage.setMaxPlayers(request.maxPlayers());
+        scrimmage.setPrivate(request.isPrivate());
 
         return scrimmageMapper.toResponse(scrimmage, attendanceRepository.countByScrimmageId(scrimmageId));
     }
@@ -81,6 +82,13 @@ public class ScrimmageService {
     @Transactional(readOnly = true)
     public List<ScrimmageResponse> search(String sport, String city) {
         return scrimmageRepository.search(sport, city, Instant.now()).stream()
+                .map(s -> scrimmageMapper.toResponse(s, attendanceRepository.countByScrimmageId(s.getId())))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScrimmageResponse> findByCreator(Long userId) {
+        return scrimmageRepository.findByCreatedByIdOrderByStartTimeDesc(userId).stream()
                 .map(s -> scrimmageMapper.toResponse(s, attendanceRepository.countByScrimmageId(s.getId())))
                 .toList();
     }

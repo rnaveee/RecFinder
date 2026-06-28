@@ -21,7 +21,14 @@ export default function ScrimmageCard({ scrimmage }) {
             </div>
             <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
-                    <span className="text-sm font-semibold text-black dark:text-white leading-snug">{scrimmage.location}</span>
+                    <div className="flex items-center gap-1.5 min-w-0">
+                        <span className="text-sm font-semibold text-black dark:text-white leading-snug truncate">{scrimmage.location}</span>
+                        {scrimmage.isPrivate && (
+                            <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded-[3px] border border-yellow-300 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400 shrink-0">
+                                🔒 Private
+                            </span>
+                        )}
+                    </div>
                     <span className={`text-xs tabular-nums shrink-0 mt-0.5 ${isFull ? "text-red-500" : "text-gray-400 dark:text-gray-500"}`}>
                         {scrimmage.attendeeCount}/{scrimmage.maxPlayers}
                     </span>

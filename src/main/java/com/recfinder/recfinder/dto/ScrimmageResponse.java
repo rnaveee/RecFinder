@@ -13,5 +13,6 @@ public record ScrimmageResponse(
         Integer maxPlayers,
         Long createdById,
         String createdByName,
-        Integer attendeeCount
+        Integer attendeeCount,
+        boolean isPrivate
 ) {}

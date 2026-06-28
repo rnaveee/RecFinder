@@ -24,6 +24,8 @@ public class Scrimmage {
     private BigDecimal attendanceCost;
     private Integer maxPlayers;
 
+    private boolean isPrivate;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by")
     private User createdBy;

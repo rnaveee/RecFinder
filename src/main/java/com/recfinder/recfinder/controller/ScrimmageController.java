@@ -30,6 +30,11 @@ public class ScrimmageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @GetMapping("/mine")
+    public List<ScrimmageResponse> findMine(@AuthenticationPrincipal AppUserDetails principal) {
+        return scrimmageService.findByCreator(principal.getUserId());
+    }
+
     @GetMapping
     public List<ScrimmageResponse> findAll(
             @RequestParam(required = false) String sport,

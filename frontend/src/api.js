@@ -57,6 +57,10 @@ export async function getScrimmages() {
     return await api("/scrimmages");
 }
 
+export async function getMyScrimmages() {
+    return await api("/scrimmages/mine");
+}
+
 export async function getScrimmage(id) {
     return await api(`/scrimmages/${id}`);
 }

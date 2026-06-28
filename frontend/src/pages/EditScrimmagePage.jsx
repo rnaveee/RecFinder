@@ -26,6 +26,7 @@ export default function EditScrimmagePage() {
                 startTime: toLocalDatetime(s.startTime),
                 attendanceCost: String(s.attendanceCost),
                 maxPlayers: String(s.maxPlayers),
+                isPrivate: s.isPrivate,
             }))
             .catch(() => navigate("/scrimmages"))
             .finally(() => setLoading(false));
@@ -34,7 +35,8 @@ export default function EditScrimmagePage() {
     if (loading || !form) return <LoadingScreen />;
 
     function handleChange(e) {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+        setForm({ ...form, [e.target.name]: value });
     }
 
     async function handleSubmit(e) {
@@ -46,6 +48,7 @@ export default function EditScrimmagePage() {
             startTime: new Date(form.startTime).toISOString(),
             attendanceCost: parseFloat(form.attendanceCost),
             maxPlayers: parseInt(form.maxPlayers),
+            isPrivate: form.isPrivate,
         };
 
         try {
@@ -97,6 +100,17 @@ export default function EditScrimmagePage() {
                         <input id="maxPlayers" name="maxPlayers" type="number" min="2" value={form.maxPlayers} onChange={handleChange} required className={inputClass} />
                     </div>
                 </div>
+
+                <label className="flex items-center gap-3 cursor-pointer select-none">
+                    <input
+                        type="checkbox"
+                        name="isPrivate"
+                        checked={form.isPrivate}
+                        onChange={handleChange}
+                        className="w-4 h-4 accent-green-600"
+                    />
+                    <span className="text-sm text-black dark:text-white">Private game (won't appear in public list)</span>
+                </label>
 
                 <button type="submit" className="w-full py-1.75 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors mt-1">
                     Save changes

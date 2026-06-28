@@ -17,6 +17,7 @@ public class ScrimmageMapper {
         scrimmage.setStartTime(request.startTime());
         scrimmage.setAttendanceCost(request.attendanceCost());
         scrimmage.setMaxPlayers(request.maxPlayers());
+        scrimmage.setPrivate(request.isPrivate());
         scrimmage.setCreatedBy(creator);
         return scrimmage;
     }
@@ -33,7 +34,8 @@ public class ScrimmageMapper {
                 scrimmage.getMaxPlayers(),
                 creator.getId(),
                 creator.getName(),
-                attendeeCount
+                attendeeCount,
+                scrimmage.isPrivate()
         );
     }
 }
