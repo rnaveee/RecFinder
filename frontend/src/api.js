@@ -53,6 +53,13 @@ export async function updateCurrentUser(body){
     });
 }
 
+export async function changePassword(body) {
+    return await api("/users/me/password", {
+        method: "PUT",
+        body: JSON.stringify(body)
+    });
+}
+
 export async function getScrimmages() {
     return await api("/scrimmages");
 }

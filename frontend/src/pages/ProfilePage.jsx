@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext.jsx";
-import { getFriendships, getMyScrimmages, updateCurrentUser } from "../api.js";
+import { changePassword, getFriendships, getMyScrimmages, updateCurrentUser } from "../api.js";
 import { useToast } from "../context/ToastContext.jsx";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "../components/LoadingScreen.jsx";
@@ -13,6 +13,8 @@ export default function ProfilePage() {
     const [loading, setLoading] = useState(true);
     const [editing, setEditing] = useState(false);
     const [form, setForm] = useState(null);
+    const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    const [passwordError, setPasswordError] = useState(null);
     const { user, setUser, loading: authLoading } = useContext(AuthContext);
     const { addToast } = useToast();
     const navigate = useNavigate();
@@ -68,6 +70,22 @@ export default function ProfilePage() {
             setEditing(false);
         } catch {
             addToast("Couldn't save your profile. Please try again.", "error");
+        }
+    }
+
+    async function handlePasswordSubmit(e) {
+        e.preventDefault();
+        setPasswordError(null);
+        if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+            setPasswordError("New passwords don't match");
+            return;
+        }
+        try {
+            await changePassword({ currentPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword });
+            setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+            addToast("Password changed successfully.", "success");
+        } catch (err) {
+            setPasswordError(err.message || "Couldn't change password. Check your current password and try again.");
         }
     }
 
@@ -160,6 +178,40 @@ export default function ProfilePage() {
                         </button>
                     </div>
                 </form>
+
+                <div className="mt-10 pt-6 border-t border-gray-100 dark:border-gray-800">
+                    <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Change password</p>
+                    <form onSubmit={handlePasswordSubmit} autoComplete="off" className="space-y-3 max-w-sm">
+                        <input
+                            type="password"
+                            placeholder="Current password"
+                            value={passwordForm.currentPassword}
+                            onChange={e => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                            required
+                            className={inputClass}
+                        />
+                        <input
+                            type="password"
+                            placeholder="New password (min 8 characters)"
+                            value={passwordForm.newPassword}
+                            onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                            required
+                            className={inputClass}
+                        />
+                        <input
+                            type="password"
+                            placeholder="Confirm new password"
+                            value={passwordForm.confirmPassword}
+                            onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                            required
+                            className={inputClass}
+                        />
+                        {passwordError && <p className="text-xs text-red-500">{passwordError}</p>}
+                        <button type="submit" className="px-5 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm font-semibold text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                            Update password
+                        </button>
+                    </form>
+                </div>
             </div>
         );
     }
@@ -244,6 +296,7 @@ export default function ProfilePage() {
                     </div>
                 )}
             </div>
+
         </div>
     );
 }
