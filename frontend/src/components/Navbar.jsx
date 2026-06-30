@@ -61,6 +61,9 @@ export default function Navbar({ user, logout }) {
 
                         <span className="text-gray-200 dark:text-gray-700">|</span>
 
+                        <Link to="/install" className="text-sm text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+                            Install
+                        </Link>
                         <Link to="/about" className="text-sm text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
                             About
                         </Link>
@@ -122,6 +125,7 @@ export default function Navbar({ user, logout }) {
                     ))}
                 </div>
                 <div className="flex justify-center gap-8 pt-3 pb-6 border-t border-gray-100 dark:border-gray-800/60">
+                    <Link to="/install" className="text-sm text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">Install</Link>
                     <Link to="/about" className="text-sm text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">About</Link>
                     <Link to="/support" className="text-sm text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">Support</Link>
                     <Link to="/terms" className="text-sm text-gray-400 dark:text-gray-600 hover:text-gray-600 dark:hover:text-gray-400 transition-colors">Terms</Link>

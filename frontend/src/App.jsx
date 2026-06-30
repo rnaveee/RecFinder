@@ -17,6 +17,8 @@ import PrivacyPage from "./pages/PrivacyPage";
 import UserProfilePage from "./pages/UserProfilePage.jsx";
 import ToastContainer from "./components/ToastContainer";
 import Footer from "./components/Footer";
+import AppBanner from "./components/AppBanner";
+import AppPage from "./pages/AppPage";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext.jsx";
 
@@ -27,6 +29,7 @@ export default function App() {
         <BrowserRouter>
             <div className="min-h-screen bg-white dark:bg-gray-950 pb-32 sm:pb-16 flex flex-col">
                 <Navbar user={user} logout={logout} />
+                <AppBanner />
                 <BetaBanner />
                 <ToastContainer />
                 <Routes>
@@ -40,6 +43,7 @@ export default function App() {
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/friends" element={<FriendsPage />} />
                     <Route path="/users/:id" element={<UserProfilePage />} />
+                    <Route path="/install" element={<AppPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/support" element={<SupportPage />} />
                     <Route path="/terms" element={<TermsPage />} />
