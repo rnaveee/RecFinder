@@ -29,8 +29,12 @@ export default function ScrimmageDetailPage() {
 
     useEffect(() => {
         if (authLoading) return;
-        if (!user) { navigate("/login"); return; }
-        Promise.all([getSentRequests(), getFriendships(), getScrimmage(id), getAttendees(id)])
+        const publicFetches = [getScrimmage(id), getAttendees(id)];
+        const allFetches = user
+            ? [getSentRequests(), getFriendships(), ...publicFetches]
+            : [Promise.resolve([]), Promise.resolve([]), ...publicFetches];
+
+        Promise.all(allFetches)
             .then(([sentData, friendsData, scrimmageData, attendeesData]) => {
                 setScrimmage(scrimmageData);
                 setAttendees(attendeesData);
@@ -198,7 +202,7 @@ export default function ScrimmageDetailPage() {
                                         <span className="text-[11px] text-gray-500 dark:text-gray-400 max-w-[60px] truncate">
                                             {a.userName}
                                         </span>
-                                        {a.userId !== user?.id && !addedIds.has(a.userId) && (
+                                        {user && a.userId !== user.id && !addedIds.has(a.userId) && (
                                             <button
                                                 onClick={async () => {
                                                     try { await sendFriendRequest(a.userId); } catch { /* already friends/pending */ }

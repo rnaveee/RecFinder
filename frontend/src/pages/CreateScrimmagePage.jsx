@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createScrimmage } from "../api.js";
 import { useToast } from "../context/ToastContext.jsx";
@@ -15,9 +15,14 @@ export default function CreateScrimmagePage() {
         isPrivate: false,
     });
 
-    const { user } = useContext(AuthContext);
+    const { user, loading: authLoading } = useContext(AuthContext);
     const navigate = useNavigate();
     const { addToast } = useToast();
+
+    useEffect(() => {
+        if (authLoading) return;
+        if (!user) navigate("/login");
+    }, [user, authLoading]);
 
     function handleChange(e) {
         const value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
@@ -26,11 +31,6 @@ export default function CreateScrimmagePage() {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
-        if(!user){
-            navigate("/login");
-            return;
-        }
         const body = {
             sport: form.sport.charAt(0).toUpperCase() + form.sport.slice(1),
             city: form.city,
