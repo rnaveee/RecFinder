@@ -25,7 +25,7 @@ export default function App() {
 
     return (
         <BrowserRouter>
-            <div className="min-h-screen bg-white dark:bg-gray-950 pb-16 sm:pb-0 flex flex-col">
+            <div className="min-h-screen bg-white dark:bg-gray-950 pb-32 sm:pb-16 flex flex-col">
                 <Navbar user={user} logout={logout} />
                 <BetaBanner />
                 <ToastContainer />
