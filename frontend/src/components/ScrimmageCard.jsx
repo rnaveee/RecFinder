@@ -14,7 +14,7 @@ export default function ScrimmageCard({ scrimmage }) {
     return (
         <Link
             to={`/scrimmages/${scrimmage.id}`}
-            className="flex gap-3 p-4 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+            className="flex gap-3 p-4 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors overflow-hidden"
         >
             <div className="w-10 h-10 rounded-full bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">
                 {scrimmage.sport.slice(0, 3).toUpperCase()}
@@ -22,7 +22,7 @@ export default function ScrimmageCard({ scrimmage }) {
             <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-sm font-semibold text-black dark:text-white leading-snug truncate">{scrimmage.location}</span>
+                        <span className="text-sm font-semibold text-black dark:text-white leading-snug break-words min-w-0">{scrimmage.location}</span>
                         {scrimmage.isPrivate && (
                             <span className="px-1.5 py-0.5 text-[10px] font-semibold rounded-[3px] border border-yellow-300 dark:border-yellow-700 text-yellow-600 dark:text-yellow-400 shrink-0">
                                 🔒 Private
