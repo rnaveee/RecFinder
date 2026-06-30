@@ -44,23 +44,6 @@ export default function AppPage() {
                         ))}
                     </ol>
                 </section>
-
-                <section className="border-t border-gray-100 dark:border-gray-800 pt-8">
-                    <h2 className="text-sm font-semibold text-black dark:text-white mb-2">What you get</h2>
-                    <ul className="space-y-2">
-                        {[
-                            "Opens fullscreen — no browser bar",
-                            "Icon on your home screen like a native app",
-                            "Faster load times on repeat visits",
-                            "Always up to date — no manual updates needed",
-                        ].map((f) => (
-                            <li key={f} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                <span className="text-green-600 dark:text-green-500 mt-0.5 shrink-0">✓</span>
-                                {f}
-                            </li>
-                        ))}
-                    </ul>
-                </section>
             </div>
         </div>
     );
